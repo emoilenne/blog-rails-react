@@ -20,9 +20,11 @@ export default class AllPosts extends Component {
         </div>
       )
     });
+    var next_button = this.props.loadMoreEnabled ? <button onClick={this.props.loadMorePosts}>Next</button> : ""
     return (
       <div>
         {posts}
+        {next_button}
       </div>
     )
   }

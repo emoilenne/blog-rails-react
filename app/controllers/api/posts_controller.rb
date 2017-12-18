@@ -1,7 +1,14 @@
 module Api
   class PostsController < ApplicationController
     def index
-      render json: Post.all
+      posts_per_page = 30
+      posts = Post.order('updated_at DESC')
+      #check if page is provided and is a positive number
+      if /\d+/ === params["page"] and params["page"].to_i > 0
+        # start from page number
+        posts = posts.offset((params["page"].to_i - 1) * posts_per_page)
+      end
+      render json: posts.limit(posts_per_page)
     end
 
     def create
