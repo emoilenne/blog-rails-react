@@ -12,7 +12,7 @@ export default class Body extends Component {
     $.getJSON('/api/posts/', (response) => { this.setState({ posts: response }) });
   }
 
-  handleSubmit = (post) => {
+  updatePosts = () => {
     $.getJSON('/api/posts/', (response) => { this.setState({ posts: response }) });
   }
 
@@ -23,7 +23,18 @@ export default class Body extends Component {
       success: () => {
         this.removePostClient(id);
       }
-    })
+    });
+  }
+
+  handleUpdate = (post) => {
+    $.ajax({
+      url: `/api/posts/${post.id}`,
+      type: 'PUT',
+      data: { post: post },
+      success: () => {
+        this.updatePosts();
+      }
+    });
   }
 
   removePostClient(id) {
@@ -36,8 +47,8 @@ export default class Body extends Component {
   render() {
     return (
       <div>
-        <NewPost handleSubmit={this.handleSubmit}/>
-        <AllPosts posts={this.state.posts} handleDelete={this.handleDelete}/>
+        <NewPost handleSubmit={this.updatePosts}/>
+        <AllPosts posts={this.state.posts} handleDelete={this.handleDelete} onUpdate={this.handleUpdate}/>
       </div>
     )
   }

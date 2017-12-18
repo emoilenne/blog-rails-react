@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
+import Post from './post';
 
 export default class AllPosts extends Component {
   handleDelete(id) {
     this.props.handleDelete(id);
   }
 
+  onUpdate = (post) => {
+    this.props.onUpdate(post);
+  }
+
   render() {
     var posts= this.props.posts.map((post) => {
       return (
         <div key={post.id}>
-          <h3>{post.user_id}</h3>
-          <p>{post.body}</p>
-          <button onClick={this.handleDelete.bind(this, post.id)}>Delete</button>
+          <Post post={post}
+            handleDelete={this.handleDelete.bind(this, post.id)}
+            handleUpdate={this.onUpdate}/>
         </div>
       )
     });
