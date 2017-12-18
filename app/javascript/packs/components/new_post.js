@@ -17,8 +17,12 @@ export default class NewPost extends Component {
   render() {
     return (
       <div>
-        <input ref='user_id' placeholder='your id' />
-        <input ref='body' placeholder='body of the post' />
+        <div>
+          <input ref='user_id' placeholder='your id' />
+        </div>
+        <div>
+          <textarea ref='body' placeholder='body of the post' cols="40" rows="5"/>
+        </div>
         <button onClick={this.handleClick}>Submit</button>
       </div>
     )

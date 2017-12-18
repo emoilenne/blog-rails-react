@@ -20,13 +20,13 @@ export default class Post extends Component {
   render() {
     var user_id = this.state.editable ? <input type='text' ref='user_id' defaultValue={this.props.post.user_id} />
                                    : <h1>{this.props.post.user_id}</h1>;
-    var body = this.state.editable ? <input type='text' ref='body' defaultValue={this.props.post.body} />
+    var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.post.body} cols="40" rows="5"/>
                                    : <p>{this.props.post.body}</p>;
 
       return (
-        <div>
-          {user_id}
-          {body}
+        <div className="container">
+          <div>{user_id}</div>
+          <div>{body}</div>
           <button onClick={this.handleEdit.bind(this)}>{this.state.editable ? 'Submit' : 'Edit' }</button>
           <button onClick={this.props.handleDelete}>Delete</button>
         </div>
