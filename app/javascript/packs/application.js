@@ -1,8 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Posts from '../components/Posts';
+import Main from './components/main'
 
-document.addEventListener('DOMContentLoaded', () => {
-  const container = document.body.appendChild(document.createElement('div'));
-  render(<Posts/>, container);
-});
+render(<Main />, document.getElementById("main"))
