@@ -25,7 +25,7 @@ export default class Body extends Component {
       url: `/api/posts/${id}`,
       type: 'DELETE',
       success: () => {
-        this.removePostClient(id);
+        this.removePost(id);
       }
     });
   }
@@ -49,7 +49,7 @@ export default class Body extends Component {
       this.setState({ posts: this.state.posts.concat(response), page: new_page }) });
   }
 
-  removePostClient(id) {
+  removePost(id) {
     var newPosts = this.state.posts.filter((post) => {
       return post.id != id;
     });
@@ -61,7 +61,7 @@ export default class Body extends Component {
       <div>
         <NewPost handleSubmit={this.updatePosts}/>
         <AllPosts posts={this.state.posts} handleDelete={this.handleDelete}
-                                           onUpdate={this.handleUpdate}
+                                           handleUpdate={this.handleUpdate}
                                            loadMorePosts={this.loadMorePosts}
                                            loadMoreEnabled={this.state.nextEnabled}/>
       </div>

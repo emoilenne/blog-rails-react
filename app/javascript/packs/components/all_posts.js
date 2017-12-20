@@ -6,8 +6,8 @@ export default class AllPosts extends Component {
     this.props.handleDelete(id);
   }
 
-  onUpdate = (post) => {
-    this.props.onUpdate(post);
+  handleUpdate = (post) => {
+    this.props.handleUpdate(post);
   }
 
   render() {
@@ -16,7 +16,7 @@ export default class AllPosts extends Component {
         <div key={post.id}>
           <Post post={post}
             handleDelete={this.handleDelete.bind(this, post.id)}
-            handleUpdate={this.onUpdate}/>
+            handleUpdate={this.handleUpdate}/>
         </div>
       )
     });

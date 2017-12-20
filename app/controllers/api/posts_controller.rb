@@ -26,7 +26,7 @@ module Api
     end
 
     def show
-      render json: Post.find(params[:id])
+      render json: Post.find_by(id: params[:id])
     end
 
     private
