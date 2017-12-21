@@ -84,10 +84,16 @@ export default class Post extends Component {
             <div>{body}</div>
           </div>
           <div className="comment-section">
-            <AllComments comments={this.state.comments} handleDelete={this.handleCommentDelete}
-                                                        handleUpdate={this.handleCommentUpdate}
-                                                        post_id={this.props.post.id}/>
-            <NewComment handleSubmit={this.updateComments} post_id={this.props.post.id}/>
+            <AllComments
+              comments={this.state.comments}
+              handleDelete={this.handleCommentDelete}
+              handleUpdate={this.handleCommentUpdate}
+              post_id={this.props.post.id}
+              userExistsOrCreate={this.props.userExistsOrCreate}/>
+            <NewComment
+              handleSubmit={this.updateComments}
+              post_id={this.props.post.id}
+              userExistsOrCreate={this.props.userExistsOrCreate}/>
           </div>
         </div>
       );

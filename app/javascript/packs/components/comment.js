@@ -12,20 +12,25 @@ export default class Comment extends Component {
 
   handleEdit() {
     if (this.state.editable) {
-      var id = this.props.comment.id;
-      var user_id = this.refs.user_id.value;
-      var post_id = this.props.post_id;
-      var body = this.refs.body.value;
-      var comment = {id: id, user_id: user_id, post_id: post_id, body: body};
-      this.props.handleUpdate(comment);
+      var id = this.props.comment.id
+      var username = this.refs.username.value
+      var post_id = this.props.post_id
+      var body = this.refs.body.value
+      this.props.userExistsOrCreate(username, (user) => {
+        var comment = {id, user_id: user.id, post_id, body}
+        this.props.handleUpdate(comment)
+        this.setState({ username, editable: false })
+      })
     }
-    this.setState({ editable: !this.state.editable });
+    else {
+      this.setState({ editable: true })
+    }
   }
 
   render() {
     var dateFormat = require('dateformat');
     var updated_at = dateFormat(new Date(this.props.comment.updated_at), "HH:MM dd-mm-yyyy");
-    var user = this.state.editable ? <input type='text' ref='user_id' defaultValue={this.props.comment.user_id} />
+    var user = this.state.editable ? <input type='text' ref='username' defaultValue={this.state.username} />
                                    : <div><h3>{this.state.username}</h3><h6>{updated_at}</h6></div>;
     var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.comment.body} cols="30" rows="1"/>
                                    : <p>{this.props.comment.body}</p>;
