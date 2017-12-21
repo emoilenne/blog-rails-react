@@ -9,7 +9,7 @@ export default class Post extends Component {
   }
 
   componentDidMount() {
-    $.getJSON(`/api/comments/post/${this.props.post.id}`, (response) => { this.setState({comments: response}); });
+    $.getJSON(`/api/posts/${this.props.post.id}/comments`, (response) => { this.setState({comments: response}); });
     $.getJSON(`/api/users/${this.props.post.user_id}`, (response) => { this.setState({username: response.name}); });
   }
 

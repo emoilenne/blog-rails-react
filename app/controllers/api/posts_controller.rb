@@ -20,13 +20,19 @@ module Api
     end
 
     def update
-      post = Post.find(params[:id])
-      post.update_attributes(post_params)
+      post = Post.find_by(id: params[:id])
+      if post
+        post.update_attributes(post_params)
+      end
       render json: post
     end
 
     def show
       render json: Post.find_by(id: params[:id])
+    end
+
+    def comments
+      render json: Post.find_by(id: params[:id]).comments.order(:updated_at)
     end
 
     private

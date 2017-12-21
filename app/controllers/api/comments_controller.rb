@@ -18,10 +18,6 @@ module Api
       render json: Comment.find_by(id: params[:id])
     end
 
-    def post
-      render json: Comment.order(:updated_at).where(post_id: params[:post_id])
-    end
-
     private
 
     def comment_params
