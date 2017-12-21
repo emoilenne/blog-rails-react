@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NewPost from './new_post';
 import AllPosts from './all_posts';
 
-export default class Body extends Component {
+export default class Home extends Component {
   constructor() {
     super();
     this.state = { posts: [], page: 1, nextEnabled: true };

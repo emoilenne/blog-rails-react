@@ -15,7 +15,11 @@ module Api
     end
 
     def show
-      render json: User.find_by(id: params[:id])
+      user = User.find_by(id: params[:id])
+      if user.nil?
+        user = User.find_by(name: params[:id])
+      end
+      render json: user
     end
 
     private

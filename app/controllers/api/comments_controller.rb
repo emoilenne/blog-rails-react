@@ -1,14 +1,5 @@
 module Api
   class CommentsController < ApplicationController
-    def index
-      # check if want to return comments for specific post
-      comments = Comment.order(:updated_at)
-      if /\d+/ === params["post"]
-        comments = comments.where(post_id: params["post"].to_i)
-      end
-      render json: comments
-    end
-
     def create
       render json: Comment.create(comment_params)
     end
@@ -25,6 +16,10 @@ module Api
 
     def show
       render json: Comment.find_by(id: params[:id])
+    end
+
+    def post
+      render json: Comment.order(:updated_at).where(post_id: params[:post_id])
     end
 
     private
