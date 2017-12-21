@@ -4,7 +4,7 @@ module Api
       posts_per_page = 30
       posts = Post.order('updated_at DESC')
       #check if page is provided and is a positive number
-      if /\d+/ === params["page"] and params["page"].to_i > 0
+      if /^\d+$/ === params["page"] and params["page"].to_i > 0
         # start from page number
         posts = posts.offset((params["page"].to_i - 1) * posts_per_page)
       end
