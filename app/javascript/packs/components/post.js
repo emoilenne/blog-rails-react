@@ -15,13 +15,18 @@ export default class Post extends Component {
 
   handlePostEdit() {
     if (this.state.editable) {
-      var id = this.props.post.id;
-      var user_id = this.refs.user_id.value;
-      var body = this.refs.body.value;
-      var post = {id: id, user_id: user_id, body: body};
-      this.props.handleUpdate(post);
+      var id = this.props.post.id
+      var username = this.refs.username.value
+      var body = this.refs.body.value
+      this.props.userExistsOrCreate(username, (user) => {
+        var post = {id, user_id: user.id, body}
+        this.props.handleUpdate(post)
+        this.setState({ editable: false, username })
+      })
     }
-    this.setState({ editable: !this.state.editable });
+    else {
+      this.setState({ editable: true })
+    }
   }
 
   updateComments = (comment) => {
@@ -63,7 +68,7 @@ export default class Post extends Component {
   render() {
     var dateFormat = require('dateformat');
     var updated_at = dateFormat(new Date(this.props.post.updated_at), "HH:MM dd-mm-yyyy");
-    var user = this.state.editable ? <input type='text' ref='user_id' defaultValue={this.props.post.user_id} />
+    var user = this.state.editable ? <input type='text' ref='username' defaultValue={this.state.username} />
                                    : <div><h3>{this.state.username}</h3><h6>{updated_at}</h6></div>;
     var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.post.body} cols="40" rows="5"/>
                                    : <p>{this.props.post.body}</p>;

@@ -41,6 +41,26 @@ export default class Home extends Component {
     });
   }
 
+  userExistsOrCreate = (username, call_on_success) => {
+    if (username.match(/^[a-zA-Z]+$/)) {
+      $.getJSON(`/api/users/${username}`, (response) => {
+        if (!response) {
+          $.ajax({
+            url: '/api/users',
+            type: 'POST',
+            data: { user: {name: username} },
+            success: (user) => {
+              call_on_success(user)
+            }
+          })
+        }
+        else {
+          call_on_success(response)
+        }
+      })
+    }
+  }
+
   loadMorePosts= () => {
     var new_page = this.state.page + 1;
     $.getJSON(`/api/posts/?page=${new_page}`, (response) => {
@@ -59,11 +79,16 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <NewPost handleSubmit={this.updatePosts}/>
-        <AllPosts posts={this.state.posts} handleDelete={this.handleDelete}
-                                           handleUpdate={this.handleUpdate}
-                                           loadMorePosts={this.loadMorePosts}
-                                           loadMoreEnabled={this.state.nextEnabled}/>
+        <NewPost
+          handleSubmit={this.updatePosts}
+          userExistsOrCreate={this.userExistsOrCreate}/>
+        <AllPosts
+          posts={this.state.posts}
+          handleDelete={this.handleDelete}
+          handleUpdate={this.handleUpdate}
+          loadMorePosts={this.loadMorePosts}
+          loadMoreEnabled={this.state.nextEnabled}
+          userExistsOrCreate={this.userExistsOrCreate}/>
       </div>
     )
   }
