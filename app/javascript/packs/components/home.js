@@ -50,6 +50,13 @@ export default class Home extends Component {
           data: { user: {name: username} },
           success: (user) => {
             call_on_success(user)
+          },
+          error: (badRequest) => {
+            var errors = JSON.parse(badRequest.responseText)
+            for (var key in errors) {
+              var text = key + " " + errors[key]
+              window.alerts.addMessage({text, type: "error"})
+            }
           }
         })
       }

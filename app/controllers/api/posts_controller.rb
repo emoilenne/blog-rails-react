@@ -12,7 +12,12 @@ module Api
     end
 
     def create
-      render json: Post.create(post_params)
+      post = Post.create(post_params)
+      if post.valid?
+        render json: post
+      else
+        render json: post.errors.messages, status: :bad_request
+      end
     end
 
     def destroy

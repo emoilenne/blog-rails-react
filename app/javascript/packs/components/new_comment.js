@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 export default class NewComment extends Component {
   handleClick = () => {
+    window.alerts.removeAll()
     var username = this.refs.username.value
     var body = this.refs.body.value
     var post_id = this.props.post_id
@@ -12,6 +13,13 @@ export default class NewComment extends Component {
         data: { comment: {post_id, user_id: user.id, body} },
         success: (comment) => {
           this.props.handleSubmit(comment)
+        },
+        error: (badRequest) => {
+          var errors = JSON.parse(badRequest.responseText)
+          for (var key in errors) {
+            var text = key + " " + errors[key]
+            window.alerts.addMessage({text, type: "error"})
+          }
         }
       })
     })

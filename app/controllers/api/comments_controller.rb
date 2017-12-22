@@ -1,7 +1,12 @@
 module Api
   class CommentsController < ApplicationController
     def create
-      render json: Comment.create(comment_params)
+      comment = Comment.create(comment_params)
+      if comment.valid?
+        render json: comment
+      else
+        render json: comment.errors.messages, status: :bad_request
+      end
     end
 
     def destroy
