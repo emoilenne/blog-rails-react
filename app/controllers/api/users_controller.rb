@@ -1,7 +1,12 @@
 module Api
   class UsersController < ApplicationController
     def create
-      render json: User.create(user_params)
+      user = User.create(user_params)
+      if user.valid?
+        render json: user
+      else
+        render json: user.errors.messages, status: :bad_request
+      end
     end
 
     def destroy
@@ -11,15 +16,16 @@ module Api
     def update
       user = User.find(params[:id])
       user.update_attributes(user_params)
+
       render json: user
     end
 
     def show
-      user = User.find_by(id: params[:id])
-      if user.nil?
-        user = User.find_by(name: params[:id])
-      end
-      render json: user
+      render json: User.find_by(id: params[:id])
+    end
+
+    def name
+      render json: User.find_by(name: params[:name])
     end
 
     private

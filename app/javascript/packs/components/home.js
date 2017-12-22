@@ -36,29 +36,27 @@ export default class Home extends Component {
       type: 'PUT',
       data: { post: post },
       success: (post) => {
-        this.updatePosts(post);
+        this.updatePosts(post)
       }
-    });
+    })
   }
 
   userExistsOrCreate = (username, call_on_success) => {
-    if (username.match(/^[a-zA-Z]+$/)) {
-      $.getJSON(`/api/users/${username}`, (response) => {
-        if (!response) {
-          $.ajax({
-            url: '/api/users',
-            type: 'POST',
-            data: { user: {name: username} },
-            success: (user) => {
-              call_on_success(user)
-            }
-          })
-        }
-        else {
-          call_on_success(response)
-        }
-      })
-    }
+    $.getJSON(`/api/users/name/${username}`, (response) => {
+      if (!response) {
+        $.ajax({
+          url: '/api/users',
+          type: 'POST',
+          data: { user: {name: username} },
+          success: (user) => {
+            call_on_success(user)
+          }
+        })
+      }
+      else {
+        call_on_success(response)
+      }
+    })
   }
 
   loadMorePosts= () => {
