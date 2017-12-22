@@ -27,13 +27,43 @@ export default class Post extends Component {
     }
   }
 
+  createTags = (tags) => {
+    tags.map((name) => {
+      name = name.substr(1)
+      $.getJSON(`/api/tags/name/${name}`, (response) => {
+        if (!response) {
+          $.ajax({
+            url: '/api/tags',
+            type: 'POST',
+            data: { tag: {name} }
+          })
+        }
+      })
+    })
+  }
+
   render() {
-    var dateFormat = require('dateformat');
-    var updated_at = dateFormat(new Date(this.props.post.updated_at), "HH:MM dd-mm-yyyy");
+    var dateFormat = require('dateformat')
+    var bodyText = this.props.post.body
+    var tagRegex = /#\w+/g
+    // insert tag links
+    if (!this.state.editable) {
+      var tags = bodyText.match(tagRegex)
+      if (tags){
+        this.createTags(tags)
+        var bodySplittedText = bodyText.split(tagRegex)
+        bodyText = [bodySplittedText[0]]
+        tags.map((tag, index) => {
+          bodyText.push(<a href={tag}>{tag}</a>)
+          bodyText.push(bodySplittedText[index + 1])
+        })
+      }
+    }
+    var updatedAt = dateFormat(new Date(this.props.post.updated_at), "HH:MM dd-mm-yyyy")
     var user = this.state.editable ? <input type='text' ref='username' defaultValue={this.state.username} />
-                                   : <div><h3>{this.state.username}</h3><h6>{updated_at}</h6></div>;
+                                   : <div><h3>{this.state.username}</h3><h6>{updatedAt}</h6></div>
     var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.post.body} cols="40" rows="5"/>
-                                   : <p>{this.props.post.body}</p>;
+                                   : <p>{bodyText}</p>
 
       return (
         <div>
