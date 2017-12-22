@@ -40,6 +40,10 @@ module Api
       render json: Post.find_by(id: params[:id]).comments.order(:updated_at)
     end
 
+    def tags
+      render json: Post.find_by(id: params[:id]).tags.order(:name)
+    end
+
     private
 
     def post_params

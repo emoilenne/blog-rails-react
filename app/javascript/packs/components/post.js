@@ -11,7 +11,7 @@ export default class Post extends Component {
     $.getJSON(`/api/users/${this.props.post.user_id}`, (response) => { this.setState({username: response.name}); });
   }
 
-  handlePostEdit() {
+  handleEdit = ()  => {
     if (this.state.editable) {
       var id = this.props.post.id
       var username = this.refs.username.value
@@ -41,7 +41,7 @@ export default class Post extends Component {
             <div>
               <div>{user}</div>
               <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
-              <button className="edit-button" onClick={this.handlePostEdit.bind(this)}>{this.state.editable ? 'Submit' : 'Edit' }</button>
+              <button className="edit-button" onClick={this.handleEdit}>{this.state.editable ? 'Submit' : 'Edit' }</button>
             </div>
             <div>{body}</div>
           </div>
