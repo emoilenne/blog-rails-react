@@ -56,11 +56,13 @@ export default class CommentsWrapper extends Component {
             handleDelete={this.handleCommentDelete}
             handleUpdate={this.handleCommentUpdate}
             post_id={this.props.post_id}
-            userExistsOrCreate={this.props.userExistsOrCreate}/>
-          <NewComment
-            handleSubmit={this.updateComments}
-            post_id={this.props.post_id}
-            userExistsOrCreate={this.props.userExistsOrCreate}/>
+            userId={this.props.userId}/>
+          { this.props.userId != -1 &&
+            <NewComment
+              handleSubmit={this.updateComments}
+              post_id={this.props.post_id}
+              userId={this.props.userId}/>
+          }
         </div>
       )
     }

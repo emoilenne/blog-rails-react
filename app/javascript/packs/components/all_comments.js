@@ -18,7 +18,7 @@ export default class AllComments extends Component {
             handleDelete={this.handleDelete.bind(this, comment.id)}
             handleUpdate={this.handleUpdate}
             post_id={this.props.post_id}
-            userExistsOrCreate={this.props.userExistsOrCreate}/>
+            userId={this.props.userId}/>
         </div>
       )
     })

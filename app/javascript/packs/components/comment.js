@@ -6,21 +6,23 @@ export default class Comment extends Component {
     this.state = { editable: false, username: "" }
   }
 
+  setUsername = (userId) => {
+    $.getJSON(`/api/users/${userId}`, (response) => { this.setState({username: response.name}) })
+  }
+
   componentDidMount() {
-    $.getJSON(`/api/users/${this.props.comment.user_id}`, (response) => { this.setState({username: response.name}) })
+    this.setUsername(this.props.comment.user_id)
   }
 
   handleEdit() {
     if (this.state.editable) {
       var id = this.props.comment.id
-      var username = this.refs.username.value
       var post_id = this.props.post_id
       var body = this.refs.body.value
-      this.props.userExistsOrCreate(username, (user) => {
-        var comment = {id, user_id: user.id, post_id, body}
-        this.props.handleUpdate(comment)
-        this.setState({ username, editable: false })
-      })
+      var comment = {id, user_id: this.props.userId, post_id, body}
+      this.props.handleUpdate(comment)
+      this.setUsername(this.props.userId)
+      this.setState({ editable: false })
     }
     else {
       this.setState({ editable: true })
@@ -29,18 +31,20 @@ export default class Comment extends Component {
 
   render() {
     var dateFormat = require('dateformat')
-    var updated_at = dateFormat(new Date(this.props.comment.updated_at), "HH:MM dd-mm-yyyy")
-    var user = this.state.editable ? <input type='text' ref='username' defaultValue={this.state.username} />
-                                   : <div><h3>{this.state.username}</h3><h6>{updated_at}</h6></div>
+    var updatedAt = dateFormat(new Date(this.props.comment.updated_at), "HH:MM dd-mm-yyyy")
     var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.comment.body} cols="30" rows="1"/>
                                    : <p>{this.props.comment.body}</p>
 
       return (
         <div className="container comment">
           <div>
-            <div>{user}</div>
+            { !this.state.editable &&
+              <div><h3>{this.state.username}</h3><h6>{updatedAt}</h6></div>
+            }
             <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
-            <button className="edit-button" onClick={this.handleEdit.bind(this)}>{this.state.editable ? 'Submit' : 'Edit' }</button>
+            { this.props.userId != -1 &&
+              <button className="edit-button" onClick={this.handleEdit.bind(this)}>{this.state.editable ? 'Submit' : 'Edit' }</button>
+            }
           </div>
           <div>{body}</div>
         </div>

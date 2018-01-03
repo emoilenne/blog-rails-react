@@ -1,3 +1,29 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.container {
+  margin-top: 20px;
+  background-color: lightblue;
+}
+
+.comment {
+  background-color: lightgreen;
+}
+
+.edit-button {
+  float: right;
+}
+
+.delete-button {
+  float: right;
+}
+
+.comment-section {
+ margin-left: 50px;
+ margin-bottom: 30px;
+}
+
+.header-logo {
+  color: black;
+}

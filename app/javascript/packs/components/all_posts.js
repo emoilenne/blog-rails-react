@@ -17,7 +17,7 @@ export default class AllPosts extends Component {
           <Post post={post}
             handleDelete={this.handleDelete.bind(this, post.id)}
             handleUpdate={this.handleUpdate}
-            userExistsOrCreate={this.props.userExistsOrCreate}/>
+            userId={this.props.userId}/>
         </div>
       )
     })

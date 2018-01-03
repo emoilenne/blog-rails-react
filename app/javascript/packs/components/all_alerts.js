@@ -12,7 +12,6 @@ export default class AllAlerts extends React.Component {
     var messages = this.state.messages
     messages.push(message)
     this.setState({ messages })
-    console.log(this.state)
   }
 
   removeMessage = (message) => {

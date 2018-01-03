@@ -93,13 +93,12 @@ export default class Home extends Component {
   }
 
   render() {
-  //  console.log(this.state.postsLink)
     return (
       <div>
-        { !this.props.receiveTag &&
+        { !this.props.receiveTag && this.props.userId != -1 &&
           <NewPost
             handleSubmit={this.updatePosts}
-            userExistsOrCreate={this.userExistsOrCreate}/>
+            userId={this.props.userId}/>
         }
         <AllPosts
           posts={this.state.posts}
@@ -107,7 +106,7 @@ export default class Home extends Component {
           handleUpdate={this.handleUpdate}
           loadMorePosts={this.loadMorePosts}
           loadMoreEnabled={this.state.nextEnabled}
-          userExistsOrCreate={this.userExistsOrCreate}/>
+          userId={this.props.userId}/>
       </div>
     )
   }

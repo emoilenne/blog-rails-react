@@ -5,13 +5,24 @@ import AllAlerts from './all_alerts'
 import { Route, Switch } from 'react-router-dom'
 
 export default class Main extends Component {
+  constructor() {
+    super()
+    this.state = { username: "", userId: -1 }
+  }
+
+  login = (userId, username) => {
+    this.setState({userId, username})
+  }
+
   render() {
     return (
       <div>
-        <Header/>
+        <Header login={this.login} username={this.state.username}/>
         <Switch>
-          <Route path='/home' component={Home} />
-          <Route path='/tags/:tag' component={(props) => { return <Home match={props.match} receiveTag={true} /> }}/>
+          <Route path='/tags/:tag' component={(props) => { return <Home match={props.match}
+                                                                        receiveTag={true}
+                                                                        userId={this.state.userId} /> }}/>
+          <Route component={() => { return <Home userId={this.state.userId} /> }} />
         </Switch>
       </div>
     )
