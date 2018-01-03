@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import Comment from './comment';
+import React, { Component } from 'react'
+import Comment from './comment'
 
 export default class AllComments extends Component {
   handleDelete(id) {
-    this.props.handleDelete(id);
+    this.props.handleDelete(id)
   }
 
   handleUpdate = (comment) => {
-    this.props.handleUpdate(comment);
+    this.props.handleUpdate(comment)
   }
 
   render() {
@@ -21,7 +21,7 @@ export default class AllComments extends Component {
             userExistsOrCreate={this.props.userExistsOrCreate}/>
         </div>
       )
-    });
+    })
     return (
       <div>
         {comments}

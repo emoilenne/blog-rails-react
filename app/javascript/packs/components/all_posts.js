@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import Post from './post';
+import React, { Component } from 'react'
+import Post from './post'
 
 export default class AllPosts extends Component {
   handleDelete(id) {
-    this.props.handleDelete(id);
+    this.props.handleDelete(id)
   }
 
   handleUpdate = (post) => {
-    this.props.handleUpdate(post);
+    this.props.handleUpdate(post)
   }
 
   render() {
@@ -20,7 +20,7 @@ export default class AllPosts extends Component {
             userExistsOrCreate={this.props.userExistsOrCreate}/>
         </div>
       )
-    });
+    })
     var next_button = this.props.loadMoreEnabled ? <button onClick={this.props.loadMorePosts}>Next</button> : ""
     return (
       <div>

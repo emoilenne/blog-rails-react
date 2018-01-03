@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import Alert from './alert';
+import React, { Component } from 'react'
+import Alert from './alert'
 
 export default class AllAlerts extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ export default class AllAlerts extends React.Component {
   removeMessage = (message) => {
     var messages = this.state.messages.filter((m) => {
       return m.text != message.text
-    });
+    })
     this.setState({ messages })
   }
 
@@ -38,6 +38,6 @@ export default class AllAlerts extends React.Component {
       <div>
         {alerts}
       </div>
-    );
+    )
   }
 }

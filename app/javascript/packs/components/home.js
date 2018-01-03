@@ -5,22 +5,22 @@ import AllPosts from './all_posts'
 export default class Home extends Component {
   constructor() {
     super()
-    this.state = { posts: [], page: 1, nextEnabled: true }
+    this.state = { posts: [], nextEnabled: true, tag: false, postsLink: '/api/posts' }
   }
 
   loadPosts = () => {
-    $.getJSON(this.props.postsLink, (response) => { this.setState({posts: response}) })
+    if (this.props.receiveTag) {
+      this.setState({ tag: this.props.match.params.tag, postsLink: `/api/posts?tag=${this.props.match.params.tag}` }, () => {
+        $.getJSON(this.state.postsLink, (response) => { this.setState({posts: response}) })
+      })
+    }
+    else {
+      $.getJSON(this.state.postsLink, (response) => { this.setState({posts: response}) })
+    }
   }
 
   componentDidMount() {
     this.loadPosts()
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.postsLink != this.props.postsLink) {
-      this.loadPosts()
-      this.setState({ page: 1, nextEnabled: true })
-    }
   }
 
   updatePosts = (post) => {
@@ -78,13 +78,11 @@ export default class Home extends Component {
   }
 
   loadMorePosts= () => {
-    var nextPageNumber = this.state.page + 1
-    var nextPageLink = `${this.props.postsLink}`
-    nextPageLink += (this.props.postsLink.split('?')[1] ? '&' : '?') + `page=${nextPageNumber}`
+    var nextPageLink = this.state.postsLink + (this.state.tag ? '&' : '?') + `offset=${this.state.posts.length}`
     $.getJSON(nextPageLink, (response) => {
       if (response.length == 0)
         this.setState({ nextEnabled: false })
-      this.setState({ posts: this.state.posts.concat(response), page: nextPageNumber }) })
+      this.setState({ posts: this.state.posts.concat(response) }) })
   }
 
   removePost(id) {
@@ -95,9 +93,10 @@ export default class Home extends Component {
   }
 
   render() {
+  //  console.log(this.state.postsLink)
     return (
       <div>
-        { this.props.newPostEnabled &&
+        { !this.props.receiveTag &&
           <NewPost
             handleSubmit={this.updatePosts}
             userExistsOrCreate={this.userExistsOrCreate}/>

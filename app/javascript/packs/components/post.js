@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import CommentsWrapper from './comments_wrapper'
 
 export default class Post extends Component {
   constructor() {
-    super();
-    this.state = { editable: false, username: "" };
+    super()
+    this.state = { editable: false, username: "" }
   }
 
   componentDidMount() {
-    $.getJSON(`/api/users/${this.props.post.user_id}`, (response) => { this.setState({username: response.name}); });
+    $.getJSON(`/api/users/${this.props.post.user_id}`, (response) => { this.setState({username: response.name}) })
   }
 
   handleEdit = ()  => {
@@ -81,6 +81,6 @@ export default class Post extends Component {
               post_id={this.props.post.id}
               userExistsOrCreate={this.props.userExistsOrCreate}/>
         </div>
-      );
+      )
     }
 }

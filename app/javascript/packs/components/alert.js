@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class Alert extends React.Component {
   alertClass (type) {
@@ -7,13 +7,13 @@ export default class Alert extends React.Component {
       alert: 'alert-warning',
       notice: 'alert-info',
       success: 'alert-success'
-    };
-    return classes[type] || classes.success;
+    }
+    return classes[type] || classes.success
   }
 
   render() {
-    const message = this.props.message;
-    const alertClassName = `alert ${ this.alertClass(message.type) } fade in`;
+    const message = this.props.message
+    const alertClassName = `alert ${ this.alertClass(message.type) } fade in`
 
     return(
       <div className={ alertClassName }>
@@ -22,6 +22,6 @@ export default class Alert extends React.Component {
           onClick={this.props.removeMessage.bind(this, message)}> &times; </button>
         { message.text }
       </div>
-    );
+    )
   }
 }
