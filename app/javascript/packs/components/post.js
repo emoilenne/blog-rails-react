@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import CommentsWrapper from './comments_wrapper'
 
 export default class Post extends Component {
@@ -54,7 +55,8 @@ export default class Post extends Component {
         var bodySplittedText = bodyText.split(tagRegex)
         bodyText = [bodySplittedText[0]]
         tags.map((tag, index) => {
-          bodyText.push(<a href={tag}>{tag}</a>)
+          var tag_name = tag.substr(1)
+          bodyText.push(<Link to={`/tags/${tag_name}`} key={`${tag_name}`}>{tag}</Link>)
           bodyText.push(bodySplittedText[index + 1])
         })
       }

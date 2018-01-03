@@ -1,5 +1,7 @@
 module Api
   class TagsController < ApplicationController
+    before_action :find_tag, only: [:update, :show]
+
     def create
       tag = Tag.create(tag_params)
       if tag.valid?
@@ -14,14 +16,15 @@ module Api
     end
 
     def update
-      tag = Tag.find(params[:id])
-      tag.update_attributes(tag_params)
-
-      render json: tag
+      if @tag
+        @tag.update_attributes(tag_params)
+      else
+        render json: tag
+      end
     end
 
     def show
-      render json: Tag.find_by(id: params[:id])
+      render json: @tag
     end
 
     def name
@@ -29,6 +32,10 @@ module Api
     end
 
     private
+
+    def find_tag
+      @tag = Tag.find_by(id: params[:id])
+    end
 
     def tag_params
       params.require(:tag).permit(:id, :name)

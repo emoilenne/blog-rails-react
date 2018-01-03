@@ -1,22 +1,33 @@
-import React, { Component } from 'react';
-import NewPost from './new_post';
-import AllPosts from './all_posts';
+import React, { Component } from 'react'
+import NewPost from './new_post'
+import AllPosts from './all_posts'
 
 export default class Home extends Component {
   constructor() {
-    super();
-    this.state = { posts: [], page: 1, nextEnabled: true };
+    super()
+    this.state = { posts: [], page: 1, nextEnabled: true }
+  }
+
+  loadPosts = () => {
+    $.getJSON(this.props.postsLink, (response) => { this.setState({posts: response}) })
   }
 
   componentDidMount() {
-    $.getJSON('/api/posts/', (response) => { this.setState({posts: response}); });
+    this.loadPosts()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.postsLink != this.props.postsLink) {
+      this.loadPosts()
+      this.setState({ page: 1, nextEnabled: true })
+    }
   }
 
   updatePosts = (post) => {
     var posts = this.state.posts.filter((p) => {
-      return p.id != post.id;
-    });
-    posts.unshift(post);
+      return p.id != post.id
+    })
+    posts.unshift(post)
     this.setState({ posts: posts })
   }
 
@@ -25,9 +36,9 @@ export default class Home extends Component {
       url: `/api/posts/${id}`,
       type: 'DELETE',
       success: () => {
-        this.removePost(id);
+        this.removePost(id)
       }
-    });
+    })
   }
 
   handleUpdate = (post) => {
@@ -67,26 +78,30 @@ export default class Home extends Component {
   }
 
   loadMorePosts= () => {
-    var new_page = this.state.page + 1;
-    $.getJSON(`/api/posts/?page=${new_page}`, (response) => {
+    var nextPageNumber = this.state.page + 1
+    var nextPageLink = `${this.props.postsLink}`
+    nextPageLink += (this.props.postsLink.split('?')[1] ? '&' : '?') + `page=${nextPageNumber}`
+    $.getJSON(nextPageLink, (response) => {
       if (response.length == 0)
-        this.setState({ nextEnabled: false });
-      this.setState({ posts: this.state.posts.concat(response), page: new_page }) });
+        this.setState({ nextEnabled: false })
+      this.setState({ posts: this.state.posts.concat(response), page: nextPageNumber }) })
   }
 
   removePost(id) {
     var newPosts = this.state.posts.filter((post) => {
-      return post.id != id;
-    });
-    this.setState({ posts: newPosts });
+      return post.id != id
+    })
+    this.setState({ posts: newPosts })
   }
 
   render() {
     return (
       <div>
-        <NewPost
-          handleSubmit={this.updatePosts}
-          userExistsOrCreate={this.userExistsOrCreate}/>
+        { this.props.newPostEnabled &&
+          <NewPost
+            handleSubmit={this.updatePosts}
+            userExistsOrCreate={this.userExistsOrCreate}/>
+        }
         <AllPosts
           posts={this.state.posts}
           handleDelete={this.handleDelete}
