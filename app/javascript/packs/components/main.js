@@ -22,6 +22,9 @@ export default class Main extends Component {
           <Route path='/tags/:tag' component={(props) => { return <Home match={props.match}
                                                                         receiveTag={true}
                                                                         userId={this.state.userId} /> }}/>
+          <Route path='/users/:username' component={(props) => { return <Home match={props.match}
+                                                                        receiveUser={true}
+                                                                        userId={this.state.userId} /> }}/>
           <Route component={() => { return <Home userId={this.state.userId} /> }} />
         </Switch>
       </div>

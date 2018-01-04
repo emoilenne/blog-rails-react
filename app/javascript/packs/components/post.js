@@ -87,7 +87,7 @@ export default class Post extends Component {
         <div className="container">
           <div>
             { !this.state.editable &&
-              <div><h3>{this.state.username}</h3><h6>{updatedAt}</h6></div>
+              <div><Link to={`/users/${this.state.username}`}><h3>{this.state.username}</h3></Link><h6>{updatedAt}</h6></div>
             }
             <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
             {editButton}

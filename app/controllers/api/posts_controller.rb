@@ -1,19 +1,17 @@
 module Api
   class PostsController < ApplicationController
-    before_action :find_post, only: [:update, :show, :destroy, :tags, :likes]
+    before_action :find_post, only: [:update, :show, :destroy, :tags, :likes, :comments]
 
     def index
       posts_per_page = 3
       posts = Post.all
       #check for tag
       if /^\w+$/ === params["tag"]
-        tag = Tag.find_by(name: params["tag"])
-        if tag
-          posts = tag.posts
-        else
-          render json: []
-          return
-        end
+        posts = posts.joins(:tags).where({tags: {name: params["tag"]}})
+      end
+      #check for user
+      if /^\w+$/ === params["username"]
+        posts = posts.joins(:user).where({users: {name: params["username"]}})
       end
       posts = posts.order('updated_at DESC')
       #check if page is provided and is a positive number
@@ -57,7 +55,11 @@ module Api
     end
 
     def comments
-      render json: Post.find_by(id: params[:id]).comments.order(:updated_at)
+      if @post
+        render json: @post.comments.order(:updated_at)
+      else
+        render json: nil
+      end
     end
 
     def tags

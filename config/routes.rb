@@ -10,7 +10,11 @@ Rails.application.routes.draw do
       end
     end
     resources :comments, only: [ :create, :destroy, :update, :show ]
-    resources :users, only: [ :create, :destroy, :update, :show ]
+    resources :users, only: [ :create, :destroy, :update, :show ] do
+      member do
+        get 'posts'
+      end
+    end
     get 'users/name/:name', to: 'users#name'
     resources :tags, only: [ :create, :destroy, :update, :show, :posts ]
     get 'tags/name/:name', to: 'tags#name'

@@ -1,5 +1,7 @@
 module Api
   class UsersController < ApplicationController
+    before_action :find_user, only: [:update, :show]
+
     def create
       user = User.create(user_params)
       if user.valid?
@@ -14,14 +16,12 @@ module Api
     end
 
     def update
-      user = User.find(params[:id])
-      user.update_attributes(user_params)
-
+      @user.update_attributes(user_params)
       render json: user
     end
 
     def show
-      render json: User.find_by(id: params[:id])
+      render json: @user
     end
 
     def name
@@ -29,6 +29,10 @@ module Api
     end
 
     private
+
+    def find_user
+      @user = User.find_by(id: params[:id])
+    end
 
     def user_params
       params.require(:user).permit(:id, :name)
