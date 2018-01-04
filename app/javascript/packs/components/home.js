@@ -42,12 +42,20 @@ export default class Home extends Component {
   }
 
   handleUpdate = (post) => {
+    window.alerts.removeAll()
     $.ajax({
       url: `/api/posts/${post.id}`,
       type: 'PUT',
       data: { post: post },
       success: (post) => {
         this.updatePosts(post)
+      },
+      error: (badRequest) => {
+        var errors = JSON.parse(badRequest.responseText)
+        for (var key in errors) {
+          var text = key + " " + errors[key]
+          window.alerts.addMessage({text, type: "error"})
+        }
       }
     })
   }

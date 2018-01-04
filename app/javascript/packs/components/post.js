@@ -71,7 +71,7 @@ export default class Post extends Component {
         bodyText = [bodySplittedText[0]]
         tags.map((tag, index) => {
           var tag_name = tag.substr(1)
-          bodyText.push(<Link to={`/tags/${tag_name}`} key={`${tag_name}`}>{tag}</Link>)
+          bodyText.push(<Link to={`/tags/${tag_name}`} key={index}>{tag}</Link>)
           bodyText.push(bodySplittedText[index + 1])
         })
       }

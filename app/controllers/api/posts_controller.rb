@@ -3,7 +3,7 @@ module Api
     before_action :find_post, only: [:update, :show, :destroy, :tags, :likes]
 
     def index
-      posts_per_page = 1
+      posts_per_page = 3
       posts = Post.all
       #check for tag
       if /^\w+$/ === params["tag"]
@@ -42,8 +42,12 @@ module Api
     def update
       if @post
         old_body = @post.body
-        @post.update_attributes(post_params)
-        @post.update_tags(old_body, post_params[:body])
+        if @post.update_attributes(post_params)
+          @post.update_tags(old_body, post_params[:body])
+        else
+          render json: @post.errors.messages, status: :bad_request
+          return
+        end
       end
       render json: @post
     end
