@@ -52,31 +52,6 @@ export default class Home extends Component {
     })
   }
 
-  userExistsOrCreate = (username, call_on_success) => {
-    $.getJSON(`/api/users/name/${username}`, (response) => {
-      if (!response) {
-        $.ajax({
-          url: '/api/users',
-          type: 'POST',
-          data: { user: {name: username} },
-          success: (user) => {
-            call_on_success(user)
-          },
-          error: (badRequest) => {
-            var errors = JSON.parse(badRequest.responseText)
-            for (var key in errors) {
-              var text = key + " " + errors[key]
-              window.alerts.addMessage({text, type: "error"})
-            }
-          }
-        })
-      }
-      else {
-        call_on_success(response)
-      }
-    })
-  }
-
   loadMorePosts= () => {
     var nextPageLink = this.state.postsLink + (this.state.tag ? '&' : '?') + `offset=${this.state.posts.length}`
     $.getJSON(nextPageLink, (response) => {

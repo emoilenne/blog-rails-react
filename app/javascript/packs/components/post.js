@@ -5,15 +5,21 @@ import CommentsWrapper from './comments_wrapper'
 export default class Post extends Component {
   constructor() {
     super()
-    this.state = { editable: false, username: "" }
+    this.state = { editable: false, username: "", liked: false, likeId: -1 }
   }
 
   setUsername = (userId) => {
-    $.getJSON(`/api/users/${userId}`, (response) => { this.setState({username: response.name}) })
+    $.getJSON(`/api/users/${userId}`, (user) => { this.setState({username: user.name}) })
   }
 
   componentDidMount() {
     this.setUsername(this.props.post.user_id)
+    $.getJSON(`/api/posts/${this.props.post.id}/likes`, (likes) => {
+      var like = likes.find(like => like.user_id == this.props.userId)
+      if (like) {
+        this.setState({liked: true, likeId: like.id})
+      }
+    })
   }
 
   handleEdit = ()  => {
@@ -30,19 +36,27 @@ export default class Post extends Component {
     }
   }
 
-  createTags = (tags) => {
-    tags.map((name) => {
-      name = name.substr(1)
-      $.getJSON(`/api/tags/name/${name}`, (response) => {
-        if (!response) {
-          $.ajax({
-            url: '/api/tags',
-            type: 'POST',
-            data: { tag: {name} }
-          })
+  likePost = () => {
+    if (this.state.liked) {
+      $.ajax({
+        url: `/api/likes/${this.state.likeId}`,
+        type: 'DELETE',
+        success: () => {
+          this.setState({liked: false, likeId: -1})
         }
       })
-    })
+    }
+    else {
+      var post_id =
+      $.ajax({
+        url: '/api/likes',
+        type: 'POST',
+        data: { like: {post_id: this.props.post.id, user_id: this.props.userId} },
+        success: (like) => {
+          this.setState({liked: true, likeId: like.id})
+        }
+      })
+    }
   }
 
   render() {
@@ -53,7 +67,6 @@ export default class Post extends Component {
     if (!this.state.editable) {
       var tags = bodyText.match(tagRegex)
       if (tags){
-        this.createTags(tags)
         var bodySplittedText = bodyText.split(tagRegex)
         bodyText = [bodySplittedText[0]]
         tags.map((tag, index) => {
@@ -66,25 +79,25 @@ export default class Post extends Component {
     var updatedAt = dateFormat(new Date(this.props.post.updated_at), "HH:MM dd-mm-yyyy")
     var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.post.body} cols="40" rows="5"/>
                                    : <p>{bodyText}</p>
-
-      return (
-        <div>
-          <div className="container">
-            <div>
-              { !this.state.editable &&
-                <div><h3>{this.state.username}</h3><h6>{updatedAt}</h6></div>
-              }
-              <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
-              { this.props.userId != -1 &&
-                <button className="edit-button" onClick={this.handleEdit}>{this.state.editable ? 'Submit' : 'Edit' }</button>
-              }
-            </div>
-            <div>{body}</div>
+    var editButton = this.props.userId == -1 ? false : <button className="edit-button" onClick={this.handleEdit}>{this.state.editable ? 'Submit' : 'Edit' }</button>
+    var likeButton = this.props.userId == -1 ? false : <button className="like-button" onClick={this.likePost}>{this.state.liked ? '❤' : '♡'}</button>
+    return (
+      <div>
+        <div className="container">
+          <div>
+            { !this.state.editable &&
+              <div><h3>{this.state.username}</h3><h6>{updatedAt}</h6></div>
+            }
+            <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
+            {editButton}
           </div>
-            <CommentsWrapper
-              post_id={this.props.post.id}
-              userId={this.props.userId}/>
+          <div>{body}</div>
+          {likeButton}
         </div>
-      )
+          <CommentsWrapper
+            post_id={this.props.post.id}
+            userId={this.props.userId}/>
+      </div>
+    )
     }
 }

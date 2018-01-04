@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       member do
         get 'comments'
         get 'tags'
+        get 'likes'
       end
     end
     resources :comments, only: [ :create, :destroy, :update, :show ]
@@ -14,6 +15,7 @@ Rails.application.routes.draw do
     resources :tags, only: [ :create, :destroy, :update, :show, :posts ]
     get 'tags/name/:name', to: 'tags#name'
     get 'tags/name/:name/posts', to: 'tags#name_posts'
+    resources :likes, only: [ :create, :destroy, :show ]
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

@@ -1,6 +1,6 @@
 module Api
   class PostsController < ApplicationController
-    before_action :find_post, only: [:update, :show, :destroy, :tags]
+    before_action :find_post, only: [:update, :show, :destroy, :tags, :likes]
 
     def index
       posts_per_page = 1
@@ -58,7 +58,15 @@ module Api
 
     def tags
       if @post
-        render json: @post.tags.order(:name)
+        render json: @post.tags
+      else
+        render json: nil
+      end
+    end
+
+    def likes
+      if @post
+        render json: @post.likes
       else
         render json: nil
       end
