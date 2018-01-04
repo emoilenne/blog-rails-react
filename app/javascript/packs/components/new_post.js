@@ -1,33 +1,49 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-export default class NewPost extends Component {
+export default class NewPost extends React.Component {
   handleClick = () => {
     window.alerts.removeAll()
-    var body = this.refs.body.value
-    $.ajax({
-      url: '/api/posts',
-      type: 'POST',
-      data: { post: {user_id: this.props.userId, body} },
-      success: (post) => {
-        this.props.handleSubmit(post)
+    const body = this.refs.body.value
+    fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      error: (badRequest) => {
-        var errors = JSON.parse(badRequest.responseText)
-        for (var key in errors) {
-          var text = key + " " + errors[key]
-          window.alerts.addMessage({text, type: "error"})
-        }
-      }
+      body: JSON.stringify({
+        post: {
+          user_id: this.props.userId,
+          body,
+        },
+      }),
     })
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(post => this.props.handleSubmit(post))
+            .catch(error => window.alerts.addMessage({
+              text: `Cannot update page with post "${body}": ${error}`,
+              type: 'error',
+            }))
+        } else {
+          response.json()
+            .then((errors) => {
+              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
+            })
+            .catch(error => window.alerts.addMessage({
+              text: `Cannot create post "${body}": ${error}`,
+              type: 'error',
+            }))
+        }
+      })
   }
 
   render() {
+    const postTextInput = <textarea ref="body" placeholder="Tell me about your day" cols="35" rows="1" />
+    const postSubmitButton = <button onClick={this.handleClick}>Submit</button>
     return (
       <div>
-        <div>
-          <textarea ref='body' placeholder='Tell me about your day' cols="40" rows="5"/>
-        </div>
-        <button onClick={this.handleClick}>Submit</button>
+        <div>{postTextInput}</div>
+        <div>{postSubmitButton}</div>
       </div>
     )
   }

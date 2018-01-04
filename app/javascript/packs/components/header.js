@@ -1,46 +1,74 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
-export default class Header extends Component {
+export default class Header extends React.Component {
+  createUser = (name, callOnSuccess) => {
+    window.alerts.removeAll()
+    fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: { name } }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(user => callOnSuccess(user))
+            .catch(error => window.alerts.addMessage({
+              text: `Cannot login with name "${name}": ${error}`,
+              type: 'error',
+            }))
+        } else {
+          response.json()
+            .then((errors) => {
+              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
+            })
+            .catch(error => window.alerts.addMessage({
+              text: `Cannot create user with name "${name}": ${error}`,
+              type: 'error',
+            }))
+        }
+      })
+  }
+
   login = () => {
     window.alerts.removeAll()
-    var username = this.refs.username.value
-    $.getJSON(`/api/users/name/${username}`, (response) => {
-      if (!response) {
-        $.ajax({
-          url: '/api/users',
-          type: 'POST',
-          data: { user: {name: username} },
-          success: (user) => {
-            this.props.login(user.id, username)
-          },
-          error: (badRequest) => {
-            var errors = JSON.parse(badRequest.responseText)
-            for (var key in errors) {
-              var text = key + " " + errors[key]
-              window.alerts.addMessage({text, type: "error"})
-            }
-          }
-        })
-      }
-      else {
-        this.props.login(response.id, username)
-      }
-    })
+    const username = this.refs.username.value
+    const callOnSuccess = user => this.props.login(user.id, user.name)
+    fetch(`/api/users/name/${username}`)
+      .then(response => response.json())
+      .then((user) => {
+        if (user) {
+          callOnSuccess(user)
+        } else {
+          this.createUser(username, callOnSuccess)
+        }
+      })
+      .catch(error => window.alerts.addMessage({
+        text: `Cannot login with username "${username}": ${error}`,
+        type: 'error',
+      }))
+  }
+
+  keyPress = (event) => {
+    if (event.keyCode === 13) {
+      this.login()
+    }
   }
 
   render() {
-    var loginSection = (this.props.username) ? <div><p>Welcome {this.props.username}</p></div>
-                                             : <div>
-                                                 <div>
-                                                   <input ref='username' placeholder='Your name' />
-                                                 </div>
-                                                 <button onClick={this.login}>Login</button>
-                                               </div>
+    const greetingMessage = (this.props.username)
+      ? <p>Welcome {this.props.username}</p>
+      : <p>You must login for posting or editing</p>
+    const login = (this.props.username)
+      ? false
+      : <input ref="username" placeholder="Your name" onKeyDown={this.keyPress} />
     return (
       <div>
-        <h1><Link to={`/`} className="header-logo" >PandaBl🐼g</Link></h1>
-        {loginSection}
+        <h1><Link to="/" className="header-logo" >PandaBl🐼g</Link></h1>
+        {greetingMessage}
+        {login}
       </div>
     )
   }

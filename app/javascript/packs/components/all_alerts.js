@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Alert from './alert'
 
 export default class AllAlerts extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { messages: [] }
+    this.state = {
+      messages: [],
+    }
     window.alerts = this
   }
 
   addMessage(message) {
-    var messages = this.state.messages
+    const { messages } = this.state
     messages.push(message)
     this.setState({ messages })
   }
 
   removeMessage = (message) => {
-    var messages = this.state.messages.filter((m) => {
-      return m.text != message.text
-    })
+    const messages = this.state.messages.filter(m => m.text !== message.text)
     this.setState({ messages })
   }
 
@@ -26,14 +26,12 @@ export default class AllAlerts extends React.Component {
   }
 
   render() {
-    var alerts = this.state.messages.map((message) => {
-      return (
-        <div key={message.text}>
-          <Alert message={message} removeMessage={this.removeMessage} />
-        </div>
-      )
-    })
-    return(
+    const alerts = this.state.messages.map(message => (
+      <div key={message.text}>
+        <Alert message={message} removeMessage={this.removeMessage} />
+      </div>
+    ))
+    return (
       <div>
         {alerts}
       </div>

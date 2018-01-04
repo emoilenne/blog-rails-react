@@ -1,0 +1,55 @@
+extends: airbnb
+parser: babel-eslint
+env:
+  browser: true
+globals:
+  token: true
+plugins:
+  - react
+rules:
+  semi:
+    - 1
+    - never
+  react/jsx-filename-extension:
+    - 1
+    - extensions:
+      - .js
+      - .jsx
+  import/no-extraneous-dependencies:
+    - error
+    - {packageDir: ./}
+  "no-mixed-operators":
+    - 0
+  react/prop-types:
+    - 0
+  react/jsx-closing-tag-location:
+    - 0
+  padded-blocks:
+    - 0
+  no-new:
+    - 0
+  react/sort-comp:
+    - 0
+  react/no-multi-comp:
+    - 0
+  radix:
+    - 1
+  camelcase:
+    - 0
+  jsx-a11y/label-has-for:
+    - 0
+  jsx-a11y/click-events-have-key-events:
+    - 0
+  jsx-a11y/no-static-element-interactions:
+    - 0
+  jsx-a11y/anchor-is-valid:
+    - 0
+  jsx-a11y/accessible-emoji:
+    - 0
+  react/no-string-refs:
+    - 0
+  no-unused-vars:
+    - 2
+    - args: all
+      argsIgnorePattern: "^_"
+

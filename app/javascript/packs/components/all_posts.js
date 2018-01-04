@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Post from './post'
 
-export default class AllPosts extends Component {
-  handleDelete(id) {
-    this.props.handleDelete(id)
+export default class AllPosts extends React.Component {
+  handleDelete(post) {
+    this.props.handleDelete(post)
   }
 
   handleUpdate = (post) => {
@@ -11,17 +11,19 @@ export default class AllPosts extends Component {
   }
 
   render() {
-    var posts= this.props.posts.map((post) => {
-      return (
-        <div key={post.id}>
-          <Post post={post}
-            handleDelete={this.handleDelete.bind(this, post.id)}
-            handleUpdate={this.handleUpdate}
-            userId={this.props.userId}/>
-        </div>
-      )
-    })
-    var next_button = this.props.loadMoreEnabled ? <button onClick={this.props.loadMorePosts}>Next</button> : ""
+    const posts = this.props.posts.map(post => (
+      <div key={post.id}>
+        <Post
+          post={post}
+          handleDelete={() => this.handleDelete(post)}
+          handleUpdate={this.handleUpdate}
+          userId={this.props.userId}
+        />
+      </div>
+    ))
+    const next_button = this.props.loadMoreEnabled
+      ? <button onClick={this.props.loadMorePosts}>Next</button>
+      : false
     return (
       <div>
         {posts}

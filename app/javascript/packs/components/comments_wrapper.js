@@ -1,69 +1,88 @@
-import React, { Component } from 'react'
+import React from 'react'
 import NewComment from './new_comment'
 import AllComments from './all_comments'
 
-export default class CommentsWrapper extends Component {
+export default class CommentsWrapper extends React.Component {
   constructor() {
     super()
     this.state = { comments: [] }
   }
 
   componentDidMount() {
-    $.getJSON(`/api/posts/${this.props.post_id}/comments`, (response) => { this.setState({comments: response}) })
+    window.alerts.removeAll()
+    fetch(`/api/posts/${this.props.post.id}/comments`)
+      .then(response => response.json())
+      .then(comments => this.setState({ comments }))
+      .catch(error => window.alerts.addMessage({
+        text: `Cannot get comments of the post "${this.props.post.body}": ${error}`,
+        type: 'error',
+      }))
   }
 
   updateComments = (comment) => {
-    var comments = this.state.comments.filter((c) => {
-      return c.id != comment.id
-    })
+    const comments = this.state.comments.filter(c => c.id !== comment.id)
     comments.push(comment)
-    this.setState({ comments: comments })
+    this.setState({ comments })
   }
 
   removeComment = (id) => {
-    var newComments = this.state.comments.filter((comment) => {
-      return comment.id != id
-    })
-    this.setState({ comments: newComments })
+    const comments = this.state.comments.filter(comment => comment.id !== id)
+    this.setState({ comments })
   }
 
   handleCommentUpdate = (comment) => {
-    $.ajax({
-      url: `/api/comments/${comment.id}`,
-      type: 'PUT',
-      data: { comment: comment },
-      success: (comment) => {
-        this.updateComments(comment)
-      }
+    window.alerts.removeAll()
+    fetch(`/api/comments/${comment.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ comment }),
     })
+      .then(response => response.json())
+      .then(newComment => this.updateComments(newComment))
+      .catch(error => window.alerts.addMessage({
+        text: `Cannot update comment to "${comment.body}": ${error}`,
+        type: 'error',
+      }))
   }
 
-  handleCommentDelete = (id) => {
-    $.ajax({
-      url: `/api/comments/${id}`,
-      type: 'DELETE',
-      success: () => {
-        this.removeComment(id)
-      }
+  handleCommentDelete = (comment) => {
+    window.alerts.removeAll()
+    fetch(`/api/commens/${comment.id}`, {
+      method: 'DELETE',
     })
+      .then(response => response.json())
+      .then(() => this.removeComment(comment.id))
+      .catch(error => window.alerts.addMessage({
+        text: `Cannot delete comment "${comment.body}": ${error}`,
+        type: 'error',
+      }))
   }
 
   render() {
-      return (
-        <div className="comment-section">
-          <AllComments
-            comments={this.state.comments}
-            handleDelete={this.handleCommentDelete}
-            handleUpdate={this.handleCommentUpdate}
-            post_id={this.props.post_id}
-            userId={this.props.userId}/>
-          { this.props.userId != -1 &&
-            <NewComment
-              handleSubmit={this.updateComments}
-              post_id={this.props.post_id}
-              userId={this.props.userId}/>
-          }
-        </div>
-      )
-    }
+    const allComments = (
+      <AllComments
+        comments={this.state.comments}
+        handleDelete={this.handleCommentDelete}
+        handleUpdate={this.handleCommentUpdate}
+        post_id={this.props.post.id}
+        userId={this.props.userId}
+      />
+    )
+    const newComment = this.props.userId === -1
+      ? false
+      : (
+        <NewComment
+          handleSubmit={this.updateComments}
+          post_id={this.props.post.id}
+          userId={this.props.userId}
+        />)
+    return (
+      <div className="comment-section">
+        <div>{allComments}</div>
+        <div>{newComment}</div>
+      </div>
+    )
+  }
 }
