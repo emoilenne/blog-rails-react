@@ -5,7 +5,7 @@ import CommentsWrapper from './comments_wrapper'
 export default class Post extends Component {
   constructor() {
     super()
-    this.state = { editable: false, username: "", liked: false, likeId: -1 }
+    this.state = { editable: false, username: "", liked: false, likeId: -1, likesCount: 0 }
   }
 
   setUsername = (userId) => {
@@ -15,6 +15,7 @@ export default class Post extends Component {
   componentDidMount() {
     this.setUsername(this.props.post.user_id)
     $.getJSON(`/api/posts/${this.props.post.id}/likes`, (likes) => {
+      this.setState({likesCount: likes.length})
       var like = likes.find(like => like.user_id == this.props.userId)
       if (like) {
         this.setState({liked: true, likeId: like.id})
@@ -42,7 +43,7 @@ export default class Post extends Component {
         url: `/api/likes/${this.state.likeId}`,
         type: 'DELETE',
         success: () => {
-          this.setState({liked: false, likeId: -1})
+          this.setState({liked: false, likeId: -1, likesCount: this.state.likesCount - 1})
         }
       })
     }
@@ -53,7 +54,7 @@ export default class Post extends Component {
         type: 'POST',
         data: { like: {post_id: this.props.post.id, user_id: this.props.userId} },
         success: (like) => {
-          this.setState({liked: true, likeId: like.id})
+          this.setState({liked: true, likeId: like.id, likesCount: this.state.likesCount + 1})
         }
       })
     }
@@ -80,7 +81,7 @@ export default class Post extends Component {
     var body = this.state.editable ? <textarea ref='body' defaultValue={this.props.post.body} cols="40" rows="5"/>
                                    : <p>{bodyText}</p>
     var editButton = this.props.userId == -1 ? false : <button className="edit-button" onClick={this.handleEdit}>{this.state.editable ? 'Submit' : 'Edit' }</button>
-    var likeButton = this.props.userId == -1 ? false : <button className="like-button" onClick={this.likePost}>{this.state.liked ? '❤' : '♡'}</button>
+    var likeButton = this.props.userId == -1 ? 'Liked by ' : <button className="like-button" onClick={this.likePost}>{this.state.liked ? '❤' : '♡'}</button>
     return (
       <div>
         <div className="container">
@@ -92,7 +93,7 @@ export default class Post extends Component {
             {editButton}
           </div>
           <div>{body}</div>
-          {likeButton}
+          <p>{likeButton}{this.state.likesCount}</p>
         </div>
           <CommentsWrapper
             post_id={this.props.post.id}
