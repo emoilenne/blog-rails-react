@@ -6,6 +6,10 @@ body {
 
 .alert {
   margin: 0;
+  width: 100%;
+  border-radius: 0;
+  position: fixed;
+  z-index: 2;
 }
 
 /* --- header --- */
@@ -16,7 +20,7 @@ body {
   height: 50px;
   margin-top: 0px;
   background-color: #2a5885;
-  z-index: 99;
+  z-index: 1;
   .header-wrapper {
     white-space: nowrap;
     .logo {
