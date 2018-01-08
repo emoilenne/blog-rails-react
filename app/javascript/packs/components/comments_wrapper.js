@@ -34,12 +34,20 @@ export default class CommentsWrapper extends React.Component {
       },
       body: JSON.stringify({ comment }),
     })
-      .then(response => response.json())
-      .then(newComment => this.updateComments(newComment))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot update comment to "${comment.body}": ${error}`,
-        type: 'error',
-      }))
+      .then((response) => {
+        if (response.ok) {
+          response.json().then(newComment => this.updateComments(newComment))
+        } else {
+          response.json()
+            .then((errors) => {
+              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
+            })
+            .catch(error => window.alerts.addMessage({
+              text: `Cannot update comment: ${error}`,
+              type: 'error',
+            }))
+        }
+      })
   }
 
   removeComment = (id) => {

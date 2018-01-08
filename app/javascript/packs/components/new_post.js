@@ -24,7 +24,7 @@ export default class NewPost extends React.Component {
               text: `Cannot update page with post "${body}": ${error}`,
               type: 'error',
             }))
-          document.getElementById('new_post_text').value = "";
+          document.getElementById('new_post_text').value = ''
         } else {
           response.json()
             .then((errors) => {
@@ -39,7 +39,7 @@ export default class NewPost extends React.Component {
   }
 
   render() {
-    const postTextInput = <textarea id="new_post_text" ref="body" placeholder="Tell me about your day"/>
+    const postTextInput = <textarea id="new_post_text" ref="body" placeholder="Tell me about your day" />
     const postSubmitButton = <button onClick={this.handleClick}>Submit</button>
     return (
       <div>

@@ -144,17 +144,17 @@ export default class Post extends React.Component {
       ? false
       : dateFormat(new Date(this.props.post.updated_at), 'HH:MM dd.mm.yyyy')
     const body = this.state.editable
-      ? <textarea className="edit-post" ref="body" defaultValue={this.props.post.body}/>
+      ? <textarea className="edit-post" ref="body" defaultValue={this.props.post.body} />
       : <p>{this.insertTagLinks()}</p>
     const editButton = this.props.userId === -1
       ? false
-      : <a className={this.state.editable ? 'icon-ok' : 'icon-pencil'} onClick={this.handleEdit} />
-    const likeButton = <a className={`icon-heart${this.state.liked ? '' : '-empty'}`} onClick={this.props.userId === -1 ? null : this.likePost} />
-    const deleteButton = <a className="icon-remove" onClick={this.state.editable ? this.cancelEdit : this.props.handleDelete} />
+      : <div className={this.state.editable ? 'icon-ok' : 'icon-pencil'} onClick={this.handleEdit} />
+    const likeButton = <div className={`icon-heart${this.state.liked ? '' : '-empty'}`} onClick={this.props.userId === -1 ? null : this.likePost} />
+    const deleteButton = <div className="icon-remove" onClick={this.state.editable ? this.cancelEdit : this.props.handleDelete} />
     const username = this.state.editable
       ? false
       : <Link to={`/users/${this.state.username}`}>{this.state.username}</Link>
-    const likesCount = this.state.likesCount
+    const { likesCount } = this.state
     const commentsWrapper = (
       <CommentsWrapper
         post={this.props.post}

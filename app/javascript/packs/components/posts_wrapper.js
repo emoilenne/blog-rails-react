@@ -69,12 +69,20 @@ export default class PostsWrapper extends React.Component {
       },
       body: JSON.stringify({ post }),
     })
-      .then(response => response.json())
-      .then(newPost => this.updatePosts(newPost))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot update post to "${post.body}": ${error}`,
-        type: 'error',
-      }))
+      .then((response) => {
+        if (response.ok) {
+          response.json().then(newPost => this.updatePosts(newPost))
+        } else {
+          response.json()
+            .then((errors) => {
+              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
+            })
+            .catch(error => window.alerts.addMessage({
+              text: `Cannot update post: ${error}`,
+              type: 'error',
+            }))
+        }
+      })
   }
 
   removePost = (id) => {

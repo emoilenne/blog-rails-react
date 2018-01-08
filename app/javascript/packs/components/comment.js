@@ -59,12 +59,12 @@ export default class Comment extends React.Component {
       : <Link to={`/users/${this.state.username}`}><h3>{this.state.username}</h3></Link>
     const editButton = this.props.userId === -1
       ? false
-      : <a className={this.state.editable ? 'icon-ok' : 'icon-pencil'} onClick={this.handleEdit} />
-    const deleteButton = <a className="icon-remove" onClick={this.state.editable ? this.cancelEdit : this.props.handleDelete} />
+      : <div className={this.state.editable ? 'icon-ok' : 'icon-pencil'} onClick={this.handleEdit} />
+    const deleteButton = <div className="icon-remove" onClick={this.state.editable ? this.cancelEdit : this.props.handleDelete} />
     return (
       <div className="comment-wrapper container">
         <div className="comment-indicator">
-          <div className="icon-chevron-right"></div>
+          <div className="icon-chevron-right" />
         </div>
         <div className="comment-section">
           <div className="post-header">

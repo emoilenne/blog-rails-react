@@ -25,7 +25,7 @@ export default class NewComment extends React.Component {
               text: `Cannot update page with comment "${body}": ${error}`,
               type: 'error',
             }))
-          document.getElementById(`new_comment_text_${this.props.post_id}`).value = "";
+          document.getElementById(`new_comment_text_${this.props.post_id}`).value = ''
         } else {
           response.json()
             .then((errors) => {
