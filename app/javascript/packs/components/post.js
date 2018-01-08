@@ -64,6 +64,10 @@ export default class Post extends React.Component {
     }
   }
 
+  cancelEdit = () => {
+    this.setState({ editable: false })
+  }
+
   handleCommentDelete = (comment) => {
     window.alerts.removeAll()
     fetch(`/api/commens/${comment.id}`, {
@@ -138,21 +142,19 @@ export default class Post extends React.Component {
   render() {
     const updatedAt = this.state.editable
       ? false
-      : dateFormat(new Date(this.props.post.updated_at), 'HH:MM dd-mm-yyyy')
+      : dateFormat(new Date(this.props.post.updated_at), 'HH:MM dd.mm.yyyy')
     const body = this.state.editable
-      ? <textarea ref="body" defaultValue={this.props.post.body} cols="40" rows="5" />
+      ? <textarea className="edit-post" ref="body" defaultValue={this.props.post.body}/>
       : <p>{this.insertTagLinks()}</p>
     const editButton = this.props.userId === -1
       ? false
-      : <button className="edit-button" onClick={this.handleEdit}>{this.state.editable ? 'Submit' : 'Edit' }</button>
-    const likeButton = this.props.userId === -1
-      ? 'Liked by '
-      : <button className="like-button" onClick={this.likePost}>{this.state.liked ? '❤' : '♡'}</button>
-    const deleteButton = <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
+      : <a className={this.state.editable ? 'icon-ok' : 'icon-pencil'} onClick={this.handleEdit} />
+    const likeButton = <a className={`icon-heart${this.state.liked ? '' : '-empty'}`} onClick={this.props.userId === -1 ? null : this.likePost} />
+    const deleteButton = <a className="icon-remove" onClick={this.state.editable ? this.cancelEdit : this.props.handleDelete} />
     const username = this.state.editable
       ? false
-      : <Link to={`/users/${this.state.username}`}><h3>{this.state.username}</h3></Link>
-    const likesCount = <p>{this.state.likesCount}</p>
+      : <Link to={`/users/${this.state.username}`}>{this.state.username}</Link>
+    const likesCount = this.state.likesCount
     const commentsWrapper = (
       <CommentsWrapper
         post={this.props.post}
@@ -160,18 +162,18 @@ export default class Post extends React.Component {
       />
     )
     return (
-      <div>
-        <div className="container">
-          <div>
-            <div>{username}</div>
-            <div>{updatedAt}</div>
-            <div>{deleteButton}</div>
-            <div>{editButton}</div>
+      <div className="post-wrapper">
+        <div className="post-section container">
+          <div className="post-header">
+            <div className="username">{username}</div>
+            <div className="updated-at">{updatedAt}</div>
+            <div className="delete-button">{deleteButton}</div>
+            <div className="edit-button">{editButton}</div>
           </div>
-          <div>{body}</div>
-          <div>
-            {likeButton}
-            {likesCount}
+          <div className="post-body">{body}</div>
+          <div className="post-footer">
+            <div className="like-button">{likeButton}</div>
+            <div className="like-count">{likesCount}</div>
           </div>
         </div>
         <div>{commentsWrapper}</div>

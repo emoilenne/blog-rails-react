@@ -22,12 +22,12 @@ export default class AllPosts extends React.Component {
       </div>
     ))
     const next_button = this.props.loadMoreEnabled
-      ? <button onClick={this.props.loadMorePosts}>Next</button>
+      ? <a className="icon-chevron-down" onClick={this.props.loadMorePosts} />
       : false
     return (
       <div>
-        {posts}
-        {next_button}
+        <div className="posts">{posts}</div>
+        <div className="next">{next_button}</div>
       </div>
     )
   }

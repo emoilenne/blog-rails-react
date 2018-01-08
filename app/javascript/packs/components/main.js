@@ -33,12 +33,14 @@ export default class Main extends React.Component {
     const componentHomePage = () => <PostsWrapper userId={this.state.userId} />
     return (
       <div>
-        <div>{header}</div>
-        <Switch>
-          <Route path="/tags/:tag" component={componentPostsWithTag} />
-          <Route path="/users/:username" component={componentPostsFromUser} />
-          <Route component={componentHomePage} />
-        </Switch>
+        <div className="header">{header}</div>
+        <div className="body">
+          <Switch>
+            <Route path="/tags/:tag" component={componentPostsWithTag} />
+            <Route path="/users/:username" component={componentPostsFromUser} />
+            <Route component={componentHomePage} />
+          </Switch>
+        </div>
       </div>
     )
   }

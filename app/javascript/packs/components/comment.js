@@ -43,29 +43,38 @@ export default class Comment extends React.Component {
     }
   }
 
+  cancelEdit = () => {
+    this.setState({ editable: false })
+  }
+
   render() {
     const updatedAt = this.state.editable
       ? false
       : dateFormat(new Date(this.props.comment.updated_at), 'HH:MM dd-mm-yyyy')
     const body = this.state.editable
-      ? <textarea ref="body" defaultValue={this.props.comment.body} cols="30" rows="1" />
+      ? <textarea className="edit-comment" ref="body" defaultValue={this.props.comment.body} cols="30" rows="1" />
       : <p>{this.props.comment.body}</p>
     const username = this.state.editable
       ? false
       : <Link to={`/users/${this.state.username}`}><h3>{this.state.username}</h3></Link>
     const editButton = this.props.userId === -1
       ? false
-      : <button className="edit-button" onClick={this.handleEdit}>{this.state.editable ? 'Submit' : 'Edit' }</button>
-    const deleteButton = <button className="delete-button" onClick={this.props.handleDelete}>Delete</button>
+      : <a className={this.state.editable ? 'icon-ok' : 'icon-pencil'} onClick={this.handleEdit} />
+    const deleteButton = <a className="icon-remove" onClick={this.state.editable ? this.cancelEdit : this.props.handleDelete} />
     return (
-      <div className="container comment">
-        <div>
-          <div>{username}</div>
-          <div>{updatedAt}</div>
-          <div>{deleteButton}</div>
-          <div>{editButton}</div>
+      <div className="comment-wrapper container">
+        <div className="comment-indicator">
+          <div className="icon-chevron-right"></div>
         </div>
-        <div>{body}</div>
+        <div className="comment-section">
+          <div className="post-header">
+            <div className="username">{username}</div>
+            <div className="updated-at">{updatedAt}</div>
+            <div className="delete-button">{deleteButton}</div>
+            <div className="edit-button">{editButton}</div>
+          </div>
+          <div className="comment-body">{body}</div>
+        </div>
       </div>
     )
   }

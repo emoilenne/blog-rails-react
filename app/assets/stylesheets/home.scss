@@ -4,6 +4,10 @@ body {
   background-color: #edeef0;
 }
 
+.alert {
+  margin: 0;
+}
+
 /* --- header --- */
 
 .header {
@@ -12,47 +16,224 @@ body {
   height: 50px;
   margin-top: 0px;
   background-color: #2a5885;
-  .wrapper {
-    float: left;
+  z-index: 99;
+  .header-wrapper {
     white-space: nowrap;
     .logo {
-      color: white;
+      margin-left: 20px;
+      a {
+        color: white;
+      }
       font-size: 33px;
       display: inline-block;
       white-space: nowrap;
+      vertical-align:top;
     }
     .greeting {
+      margin-left: 150px;
+      margin-top: 11px;
+      color: white;
+      font-size: 20px;
       display: inline-block;
+      vertical-align:top;
     }
     .login {
+      margin-left: 20px;
+      margin-top: 9px;
+      vertical-align:top;
+      :focus {
+        outline: none;
+      }
+      input {
+        width: 150px;
+        height: 32px;
+        border-width: 1px;
+        border-radius: 16px;
+        border-color: #e1e8ed;
+        padding-left: 10px;
+        background-color: #f5f8fa;
+        font-size: 17px;
+      }
       display: inline-block;
     }
   }
 }
 
+/* --- body --- */
 
-.container {
-  margin-top: 20px;
-  background-color: lightblue;
+.body {
+  padding-top: 50px;
+  font-family: 'Ubuntu', sans-serif;
+  .body-wrapper {
+    text-align: center;
+    .type {
+      font-size: 30px;
+    }
+  }
 }
 
-.comment {
-  background-color: lightgreen;
+/* --- posts --- */
+
+.all-posts {
+  text-align: left;
+  .next {
+    text-align: center;
+    a {
+      color: #2a5885;
+      font-size: 40px;
+      padding: 10px 20px 10px 20px;
+      text-decoration: none;
+    }
+    :hover {
+      color: #0b2d4f;
+    }
+  }
+  .posts {
+    .post-wrapper {
+      .post-section {
+        background-color: #ffffff;
+      }
+      margin-bottom: 20px;
+    }
+  }
 }
 
-.edit-button {
-  float: right;
+.post-header {
+  white-space: nowrap;
+  position: relative;
+  .username {
+    display: inline-block;
+    font-size: 30px;
+  }
+  .updated-at {
+    display: inline-block;
+    margin-left: 20px;
+    font-size: 15px;
+  }
+  .delete-button {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-top: 5px;
+    font-size: 30px;
+    :hover {
+      color: #000000;
+    }
+    a {
+      color: #dce2ed;
+      text-decoration: none;
+    }
+  }
+  .edit-button {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-right: 50px;
+    margin-top: 6px;
+    font-size: 27px;
+    :hover {
+      color: #000000;
+    }
+    a {
+      color: #dce2ed;
+      text-decoration: none;
+    }
+  }
 }
 
-.delete-button {
-  float: right;
+.post-body {
+  font-size: 40px;
+  word-wrap: break-word;
 }
 
-.comment-section {
- margin-left: 50px;
- margin-bottom: 30px;
+.post-footer {
+  white-space: nowrap;
+  .like-button {
+    display: inline-block;
+    font-size: 30px;
+    a {
+      text-decoration: none;
+    }
+    vertical-align: bottom;
+    padding-bottom: 5px;
+  }
+  .like-count {
+    font-size: 37px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+  .icon-heart {
+    color: #b22813;
+  }
+  .icon-heart-empty {
+    color: black;
+  }
 }
 
-.header-logo {
-  color: black;
+.new-post {
+  padding: 0px;
+  textarea {
+    font-size: 40px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    resize: none;
+  }
+  button {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: 18px;
+    background: #2a5885;
+    padding: 10px 20px 10px 20px;
+  }
+}
+
+.edit-post {
+  font-size: 40px;
+  border: none;
+  outline: none;
+  padding: 10px;
+  resize: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- comments --- */
+
+.comment-wrapper {
+  border-top: 1px solid #dce2ed;
+  border-bottom: 1px solid #dce2ed;
+  white-space: nowrap;
+  background-color: white;
+  .comment-indicator {
+    display: inline-block;
+    font-size: 40px;
+    vertical-align: top;
+    width: 40px;
+    margin-top: 10px;
+  }
+  .comment-section {
+    display: inline-block;
+    width: calc(100% - 40px);
+  }
+}
+
+.comment-body {
+  font-size: 20px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.edit-comment {
+  font-size: 20px;
+  border: none;
+  outline: none;
+  padding: 10px;
+  resize: none;
+  width: 100%;
+  height: 100%;
 }

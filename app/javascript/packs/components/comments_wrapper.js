@@ -49,7 +49,7 @@ export default class CommentsWrapper extends React.Component {
 
   handleCommentDelete = (comment) => {
     window.alerts.removeAll()
-    fetch(`/api/commens/${comment.id}`, {
+    fetch(`/api/comments/${comment.id}`, {
       method: 'DELETE',
     })
       .then(response => response.json())
@@ -79,9 +79,9 @@ export default class CommentsWrapper extends React.Component {
           userId={this.props.userId}
         />)
     return (
-      <div className="comment-section">
+      <div>
         <div>{allComments}</div>
-        <div>{newComment}</div>
+        <div className="container new-post">{newComment}</div>
       </div>
     )
   }

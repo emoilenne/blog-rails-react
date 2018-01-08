@@ -117,7 +117,7 @@ export default class PostsWrapper extends React.Component {
     } else {
       typeOfPosts = <p>Home page</p>
     }
-    const newPost = this.props.receiveTag || this.props.userId === -1
+    const newPost = this.props.receiveTag || this.state.username || this.props.userId === -1
       ? false
       : (
         <NewPost
@@ -134,10 +134,10 @@ export default class PostsWrapper extends React.Component {
         userId={this.props.userId}
       />)
     return (
-      <div>
-        <div>{typeOfPosts}</div>
-        <div>{newPost}</div>
-        <div>{allPosts}</div>
+      <div className="body-wrapper">
+        <div className="type">{typeOfPosts}</div>
+        <div className="container new-post">{newPost}</div>
+        <div className="all-posts">{allPosts}</div>
       </div>
     )
   }
