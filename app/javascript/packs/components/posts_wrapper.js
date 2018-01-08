@@ -2,7 +2,7 @@ import React from 'react'
 import NewPost from './new_post'
 import AllPosts from './all_posts'
 
-export default class Home extends React.Component {
+export default class PostsWrapper extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -12,6 +12,10 @@ export default class Home extends React.Component {
       username: false,
       postsLink: '/api/posts',
     }
+  }
+
+  componentDidMount() {
+    this.loadPosts()
   }
 
   fetchPosts = () => {
@@ -50,30 +54,13 @@ export default class Home extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.loadPosts()
-  }
-
   updatePosts = (post) => {
     const posts = this.state.posts.filter(p => p.id !== post.id)
     posts.unshift(post)
     this.setState({ posts })
   }
 
-  handleDelete = (post) => {
-    window.alerts.removeAll()
-    fetch(`/api/posts/${post.id}`, {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(() => this.removePost(post.id))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot delete post "${post.body}": ${error}`,
-        type: 'error',
-      }))
-  }
-
-  handleUpdate = (post) => {
+  handlePostUpdate = (post) => {
     window.alerts.removeAll()
     fetch(`/api/posts/${post.id}`, {
       method: 'PUT',
@@ -90,7 +77,25 @@ export default class Home extends React.Component {
       }))
   }
 
-  loadMorePosts= () => {
+  removePost = (id) => {
+    const posts = this.state.posts.filter(post => post.id !== id)
+    this.setState({ posts })
+  }
+
+  handleDelete = (post) => {
+    window.alerts.removeAll()
+    fetch(`/api/posts/${post.id}`, {
+      method: 'DELETE',
+    })
+      .then(response => response.json())
+      .then(() => this.removePost(post.id))
+      .catch(error => window.alerts.addMessage({
+        text: `Cannot delete post "${post.body}": ${error}`,
+        type: 'error',
+      }))
+  }
+
+  loadMorePosts = () => {
     window.alerts.removeAll()
     const nextPageLink = `${this.state.postsLink}${this.state.tag || this.state.username ? '&' : '?'}offset=${this.state.posts.length}`
     fetch(nextPageLink)
@@ -101,11 +106,6 @@ export default class Home extends React.Component {
         }
         this.setState({ posts: this.state.posts.concat(posts) })
       })
-  }
-
-  removePost(id) {
-    const posts = this.state.posts.filter(post => post.id !== id)
-    this.setState({ posts })
   }
 
   render() {
@@ -128,7 +128,7 @@ export default class Home extends React.Component {
       <AllPosts
         posts={this.state.posts}
         handleDelete={this.handleDelete}
-        handleUpdate={this.handleUpdate}
+        handleUpdate={this.handlePostUpdate}
         loadMorePosts={this.loadMorePosts}
         loadMoreEnabled={this.state.nextEnabled}
         userId={this.props.userId}

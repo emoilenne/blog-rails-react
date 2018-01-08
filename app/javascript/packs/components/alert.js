@@ -14,10 +14,11 @@ export default class Alert extends React.Component {
   render() {
     const { message } = this.props
     const alertClassName = `alert ${Alert.alertClass(message.type)} fade in`
+    const closeButton = (<button className="close" data-dismiss="alert" onClick={() => this.props.removeMessage(message)}> &times; </button>)
 
     return (
       <div className={alertClassName}>
-        <button className="close" data-dismiss="alert" onClick={() => this.props.removeMessage(message)}> &times; </button>
+        {closeButton}
         { message.text }
       </div>
     )

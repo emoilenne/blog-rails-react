@@ -64,11 +64,14 @@ export default class Header extends React.Component {
     const login = (this.props.username)
       ? false
       : <input ref="username" placeholder="Your name" onKeyDown={this.keyPress} />
+    const logo = <Link to="/" className="header-logo" >PandaBl🐼g</Link>
     return (
-      <div>
-        <h1><Link to="/" className="header-logo" >PandaBl🐼g</Link></h1>
-        {greetingMessage}
-        {login}
+      <div className="header">
+        <div className="wrapper">
+          <div className="logo">{logo}</div>
+          <div className="greeting">{greetingMessage}</div>
+          <div className="login">{login}</div>
+        </div>
       </div>
     )
   }

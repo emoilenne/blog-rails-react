@@ -12,6 +12,10 @@ export default class Comment extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.setUsername(this.props.comment.user_id)
+  }
+
   setUsername = (userId) => {
     window.alerts.removeAll()
     fetch(`/api/users/${userId}`)
@@ -21,10 +25,6 @@ export default class Comment extends React.Component {
         text: `Cannot get username of the comment "${this.props.comment.body}": ${error}`,
         type: 'error',
       }))
-  }
-
-  componentDidMount() {
-    this.setUsername(this.props.comment.user_id)
   }
 
   handleEdit = () => {

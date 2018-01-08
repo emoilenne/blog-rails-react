@@ -17,17 +17,6 @@ export default class Post extends React.Component {
     }
   }
 
-  setUsername = (userId) => {
-    window.alerts.removeAll()
-    fetch(`/api/users/${userId}`)
-      .then(response => response.json())
-      .then(user => this.setState({ username: user.name }))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot get username of the post "${this.props.post.body}": ${error}`,
-        type: 'error',
-      }))
-  }
-
   componentDidMount() {
     window.alerts.removeAll()
     this.setUsername(this.props.post.user_id)
@@ -45,6 +34,17 @@ export default class Post extends React.Component {
       })
       .catch(error => window.alerts.addMessage({
         text: `Cannot get likes of the post "${this.props.post.body}": ${error}`,
+        type: 'error',
+      }))
+  }
+
+  setUsername = (userId) => {
+    window.alerts.removeAll()
+    fetch(`/api/users/${userId}`)
+      .then(response => response.json())
+      .then(user => this.setState({ username: user.name }))
+      .catch(error => window.alerts.addMessage({
+        text: `Cannot get username of the post "${this.props.post.body}": ${error}`,
         type: 'error',
       }))
   }

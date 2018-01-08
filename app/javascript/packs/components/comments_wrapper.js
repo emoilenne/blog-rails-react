@@ -3,8 +3,8 @@ import NewComment from './new_comment'
 import AllComments from './all_comments'
 
 export default class CommentsWrapper extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = { comments: [] }
   }
 
@@ -25,11 +25,6 @@ export default class CommentsWrapper extends React.Component {
     this.setState({ comments })
   }
 
-  removeComment = (id) => {
-    const comments = this.state.comments.filter(comment => comment.id !== id)
-    this.setState({ comments })
-  }
-
   handleCommentUpdate = (comment) => {
     window.alerts.removeAll()
     fetch(`/api/comments/${comment.id}`, {
@@ -45,6 +40,11 @@ export default class CommentsWrapper extends React.Component {
         text: `Cannot update comment to "${comment.body}": ${error}`,
         type: 'error',
       }))
+  }
+
+  removeComment = (id) => {
+    const comments = this.state.comments.filter(comment => comment.id !== id)
+    this.setState({ comments })
   }
 
   handleCommentDelete = (comment) => {

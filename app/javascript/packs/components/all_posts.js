@@ -2,7 +2,7 @@ import React from 'react'
 import Post from './post'
 
 export default class AllPosts extends React.Component {
-  handleDelete(post) {
+  handleDelete = (post) => {
     this.props.handleDelete(post)
   }
 

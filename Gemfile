@@ -29,7 +29,7 @@ gem 'jbuilder', '~> 2.5'
 # React webpack
 gem 'webpacker'
 gem 'react-rails'
-
+gem 'foreman'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'

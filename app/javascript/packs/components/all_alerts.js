@@ -10,7 +10,7 @@ export default class AllAlerts extends React.Component {
     window.alerts = this
   }
 
-  addMessage(message) {
+  addMessage = (message) => {
     const { messages } = this.state
     messages.push(message)
     this.setState({ messages })

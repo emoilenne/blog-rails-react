@@ -2,7 +2,7 @@ import React from 'react'
 import Comment from './comment'
 
 export default class AllComments extends React.Component {
-  handleDelete(id) {
+  handleDelete = (id) => {
     this.props.handleDelete(id)
   }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import Header from './header'
-import Home from './home'
+import PostsWrapper from './posts_wrapper'
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -19,18 +19,18 @@ export default class Main extends React.Component {
   render() {
     const header = <Header login={this.login} username={this.state.username} />
     const componentPostsWithTag = (props => (
-      <Home
+      <PostsWrapper
         match={props.match}
         receiveTag
         userId={this.state.userId}
       />))
     const componentPostsFromUser = (props => (
-      <Home
+      <PostsWrapper
         match={props.match}
         receiveUser
         userId={this.state.userId}
       />))
-    const componentHomePage = () => <Home userId={this.state.userId} />
+    const componentHomePage = () => <PostsWrapper userId={this.state.userId} />
     return (
       <div>
         <div>{header}</div>
