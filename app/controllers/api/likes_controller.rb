@@ -1,6 +1,7 @@
 module Api
+  # Managing likes
   class LikesController < ApplicationController
-    before_action :find_like, only: [:show, :destroy]
+    before_action :find_like, only: %i[show destroy]
 
     def create
       like = Like.create(like_params)
@@ -22,7 +23,7 @@ module Api
     private
 
     def find_like
-      @like = Like.find_by(id: params[:id])
+      @like = Like.find(params[:id])
     end
 
     def like_params

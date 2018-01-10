@@ -1,24 +1,13 @@
 module Api
+  # Managing posts
   class PostsController < ApplicationController
-    before_action :find_post, only: [:update, :show, :destroy, :tags, :likes, :comments]
+    before_action :find_post, only: %i[update show destroy tags likes comments]
 
     def index
       posts_per_page = 3
-      posts = Post.all
-      #check for tag
-      if /^\w+$/ === params["tag"]
-        posts = posts.joins(:tags).where({tags: {name: params["tag"]}})
-      end
-      #check for user
-      if /^\w+$/ === params["username"]
-        posts = posts.joins(:user).where({users: {name: params["username"]}})
-      end
-      posts = posts.order('updated_at DESC')
-      #check if page is provided and is a positive number
-      if /^\d+$/ === params["offset"] and params["offset"].to_i > 0
-        # start from page number
-        posts = posts.offset(params["offset"])
-      end
+      posts = Post.get_posts(params)
+      posts = posts.sort_date('desc')
+      posts = posts.offset_posts(posts, params['offset'])
       render json: posts.limit(posts_per_page)
     end
 
@@ -38,16 +27,13 @@ module Api
     end
 
     def update
-      if @post
-        old_body = @post.body
-        if @post.update_attributes(post_params)
-          @post.update_tags(old_body, post_params[:body])
-        else
-          render json: @post.errors.messages, status: :bad_request
-          return
-        end
+      old_body = @post.body
+      if @post.update_attributes(post_params)
+        @post.update_tags(old_body, post_params[:body])
+        render json: @post
+      else
+        render json: @post.errors.messages, status: :bad_request
       end
-      render json: @post
     end
 
     def show
@@ -55,33 +41,21 @@ module Api
     end
 
     def comments
-      if @post
-        render json: @post.comments.order(:updated_at)
-      else
-        render json: nil
-      end
+      render json: @post.comments.order(:updated_at)
     end
 
     def tags
-      if @post
-        render json: @post.tags
-      else
-        render json: nil
-      end
+      render json: @post.tags
     end
 
     def likes
-      if @post
-        render json: @post.likes
-      else
-        render json: nil
-      end
+      render json: @post.likes
     end
 
     private
 
     def find_post
-      @post = Post.find_by(id: params[:id])
+      @post = Post.find(params[:id])
     end
 
     def post_params

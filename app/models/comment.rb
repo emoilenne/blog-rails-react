@@ -1,3 +1,4 @@
+# Comment is a post that belongs to other post
 class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :post

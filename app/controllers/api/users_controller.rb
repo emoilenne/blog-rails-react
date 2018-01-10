@@ -1,6 +1,7 @@
 module Api
+  # Managing users
   class UsersController < ApplicationController
-    before_action :find_user, only: [:update, :show]
+    before_action :find_user, only: %i[update delete show]
 
     def create
       user = User.create(user_params)
@@ -12,12 +13,15 @@ module Api
     end
 
     def destroy
-      render json: User.destroy(params[:id])
+      render json: @user.destroy
     end
 
     def update
-      @user.update_attributes(user_params)
-      render json: user
+      if @user.update_attributes(user_params)
+        render json: @user
+      else
+        render json: @user.errors.messages, status: :bad_request
+      end
     end
 
     def show
@@ -31,7 +35,7 @@ module Api
     private
 
     def find_user
-      @user = User.find_by(id: params[:id])
+      @user = User.find(params[:id])
     end
 
     def user_params

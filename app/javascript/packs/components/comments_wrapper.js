@@ -42,7 +42,7 @@ export default class CommentsWrapper extends React.Component {
       ? false
       : (
         <NewComment
-          handleSubmit={this.updateComments}
+          handleSubmit={this.handleCommentUpdate}
           post_id={this.props.post.id}
           userId={this.props.userId}
         />)

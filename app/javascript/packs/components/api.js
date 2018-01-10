@@ -39,7 +39,7 @@ export default class API extends React.Component {
 
   static getUserByName = (name, callOnSuccess) => {
     window.alerts.removeAll()
-    fetch(`/api/users/name/${name}`)
+    fetch(`/api/users/find?name=${name}`)
       .then(response => response.json())
       .then(user => callOnSuccess(user))
       .catch(error => window.alerts.addMessage({

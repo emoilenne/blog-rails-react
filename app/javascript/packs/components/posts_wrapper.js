@@ -38,12 +38,6 @@ export default class PostsWrapper extends React.Component {
     }
   }
 
-  updatePosts = (post) => {
-    const posts = this.state.posts.filter(p => p.id !== post.id)
-    posts.unshift(post)
-    this.setState({ posts })
-  }
-
   handlePostUpdate = (post) => {
     API.updatePost(post, (newPost) => {
       const posts = this.state.posts.filter(p => p.id !== newPost.id)
@@ -53,7 +47,7 @@ export default class PostsWrapper extends React.Component {
   }
 
   handlePostDelete = (post) => {
-    API.removePost(post, () => {
+    API.deletePost(post, () => {
       const posts = this.state.posts.filter(p => p.id !== post.id)
       this.setState({ posts })
     })
@@ -72,7 +66,7 @@ export default class PostsWrapper extends React.Component {
       ? false
       : (
         <NewPost
-          handleSubmit={this.updatePosts}
+          handleSubmit={this.handlePostUpdate}
           userId={this.props.userId}
         />)
     const allPosts = (

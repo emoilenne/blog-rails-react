@@ -7,7 +7,10 @@ export default class NewPost extends React.Component {
       user_id: this.props.userId,
       body: this.refs.body.value,
     }
-    API.createPost(post, newPost => this.props.handleSubmit(newPost))
+    API.createPost(post, (newPost) => {
+      document.getElementById('new_post_text').value = ''
+      this.props.handleSubmit(newPost)
+    })
   }
 
   render() {

@@ -8,7 +8,10 @@ export default class NewComment extends React.Component {
       user_id: this.props.userId,
       body: this.refs.body.value,
     }
-    API.createComment(comment, newComment => this.props.handleSubmit(newComment))
+    API.createComment(comment, (newComment) => {
+      document.getElementById(`new_comment_text_${this.props.post_id}`).value = ''
+      this.props.handleSubmit(newComment)
+    })
   }
 
   render() {
