@@ -1,54 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import API from './api'
 
 export default class Header extends React.Component {
-  createUser = (name, callOnSuccess) => {
-    window.alerts.removeAll()
-    fetch('/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ user: { name } }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          response.json()
-            .then(user => callOnSuccess(user))
-            .catch(error => window.alerts.addMessage({
-              text: `Cannot login with name "${name}": ${error}`,
-              type: 'error',
-            }))
-        } else {
-          response.json()
-            .then((errors) => {
-              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
-            })
-            .catch(error => window.alerts.addMessage({
-              text: `Cannot create user with name "${name}": ${error}`,
-              type: 'error',
-            }))
-        }
-      })
-  }
-
   login = () => {
     window.alerts.removeAll()
     const username = this.refs.username.value
     const callOnSuccess = user => this.props.login(user.id, user.name)
-    fetch(`/api/users/name/${username}`)
-      .then(response => response.json())
-      .then((user) => {
-        if (user) {
-          callOnSuccess(user)
-        } else {
-          this.createUser(username, callOnSuccess)
-        }
-      })
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot login with username "${username}": ${error}`,
-        type: 'error',
-      }))
+    API.getUserByName(username, (user) => {
+      if (user) {
+        callOnSuccess(user)
+      } else {
+        API.createUser(username, callOnSuccess)
+      }
+    })
   }
 
   keyPress = (event) => {

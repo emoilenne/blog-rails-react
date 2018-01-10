@@ -39,7 +39,7 @@ body {
       color: white;
       font-size: 20px;
       display: inline-block;
-      vertical-align:top;
+      vertical-align: top;
     }
     .login {
       margin-left: 20px;
@@ -177,6 +177,7 @@ body {
 
 .new-post {
   padding: 0px;
+  margin-top: 1px;
   textarea {
     font-size: 40px;
     border: none;
@@ -209,8 +210,7 @@ body {
 /* --- comments --- */
 
 .comment-wrapper {
-  border-top: 1px solid #dce2ed;
-  border-bottom: 1px solid #dce2ed;
+  margin-top: 1px;
   white-space: nowrap;
   background-color: white;
   .comment-indicator {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import API from './api'
 
 const dateFormat = require('dateformat')
 
@@ -17,14 +18,7 @@ export default class Comment extends React.Component {
   }
 
   setUsername = (userId) => {
-    window.alerts.removeAll()
-    fetch(`/api/users/${userId}`)
-      .then(response => response.json())
-      .then(user => this.setState({ username: user.name }))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot get username of the comment "${this.props.comment.body}": ${error}`,
-        type: 'error',
-      }))
+    API.getUserById(userId, user => this.setState({ username: user.name }))
   }
 
   handleEdit = () => {

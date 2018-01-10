@@ -2,6 +2,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CommentsWrapper from './comments_wrapper'
+import API from './api'
 
 const dateFormat = require('dateformat')
 
@@ -20,33 +21,20 @@ export default class Post extends React.Component {
   componentDidMount() {
     window.alerts.removeAll()
     this.setUsername(this.props.post.user_id)
-    fetch(`/api/posts/${this.props.post.id}/likes`)
-      .then(response => response.json())
-      .then((likes) => {
-        this.setState({ likesCount: likes.length })
-        const likeOfCurrectUser = likes.find(like => like.user_id === this.props.userId)
-        if (likeOfCurrectUser) {
-          this.setState({
-            liked: true,
-            likeId: likeOfCurrectUser.id,
-          })
-        }
-      })
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot get likes of the post "${this.props.post.body}": ${error}`,
-        type: 'error',
-      }))
+    API.getLikesOfPost(this.props.post.id, (likes) => {
+      this.setState({ likesCount: likes.length })
+      const likeOfCurrectUser = likes.find(like => like.user_id === this.props.userId)
+      if (likeOfCurrectUser) {
+        this.setState({
+          liked: true,
+          likeId: likeOfCurrectUser.id,
+        })
+      }
+    })
   }
 
   setUsername = (userId) => {
-    window.alerts.removeAll()
-    fetch(`/api/users/${userId}`)
-      .then(response => response.json())
-      .then(user => this.setState({ username: user.name }))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot get username of the post "${this.props.post.body}": ${error}`,
-        type: 'error',
-      }))
+    API.getUserById(userId, user => this.setState({ username: user.name }))
   }
 
   handleEdit = () => {
@@ -68,58 +56,19 @@ export default class Post extends React.Component {
     this.setState({ editable: false })
   }
 
-  handleCommentDelete = (comment) => {
-    window.alerts.removeAll()
-    fetch(`/api/commens/${comment.id}`, {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(() => this.removeComment(comment.id))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot delete comment "${comment.body}": ${error}`,
-        type: 'error',
-      }))
-  }
-
   likePost = () => {
     if (this.state.liked) {
-      fetch(`/api/likes/${this.state.likeId}`, {
-        method: 'DELETE',
-      })
-        .then(response => response.json())
-        .then(() => this.setState({
-          liked: false,
-          likeId: -1,
-          likesCount: this.state.likesCount - 1,
-        }))
-        .catch(error => window.alerts.addMessage({
-          text: `Cannot remove like from post "${this.props.post.body}": ${error}`,
-          type: 'error',
-        }))
+      API.dislikePost(this.state.likeId, () => this.setState({
+        liked: false,
+        likeId: -1,
+        likesCount: this.state.likesCount - 1,
+      }))
     } else {
-      fetch('/api/likes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          like: {
-            post_id: this.props.post.id,
-            user_id: this.props.userId,
-          },
-        }),
-      })
-        .then(response => response.json())
-        .then(like => this.setState({
-          liked: true,
-          likeId: like.id,
-          likesCount: this.state.likesCount + 1,
-        }))
-        .catch(error => window.alerts.addMessage({
-          text: `Cannot like the post "${this.props.post.body}": ${error}`,
-          type: 'error',
-        }))
-
+      API.likePost(this.props.post.id, this.props.userId, like => this.setState({
+        liked: true,
+        likeId: like.id,
+        likesCount: this.state.likesCount + 1,
+      }))
     }
   }
 

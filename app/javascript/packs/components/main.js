@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import Header from './header'
 import PostsWrapper from './posts_wrapper'
+import AllAlerts from './all_alerts'
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export default class Main extends React.Component {
   }
 
   render() {
+    const allAlerts = <AllAlerts />
     const header = <Header login={this.login} username={this.state.username} />
     const componentPostsWithTag = (props => (
       <PostsWrapper
@@ -33,6 +35,7 @@ export default class Main extends React.Component {
     const componentHomePage = () => <PostsWrapper userId={this.state.userId} />
     return (
       <div>
+        <div>{allAlerts}</div>
         <div className="header">{header}</div>
         <div className="body">
           <Switch>

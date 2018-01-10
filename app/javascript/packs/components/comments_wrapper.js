@@ -1,6 +1,7 @@
 import React from 'react'
 import NewComment from './new_comment'
 import AllComments from './all_comments'
+import API from './api'
 
 export default class CommentsWrapper extends React.Component {
   constructor(props) {
@@ -9,63 +10,22 @@ export default class CommentsWrapper extends React.Component {
   }
 
   componentDidMount() {
-    window.alerts.removeAll()
-    fetch(`/api/posts/${this.props.post.id}/comments`)
-      .then(response => response.json())
-      .then(comments => this.setState({ comments }))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot get comments of the post "${this.props.post.body}": ${error}`,
-        type: 'error',
-      }))
-  }
-
-  updateComments = (comment) => {
-    const comments = this.state.comments.filter(c => c.id !== comment.id)
-    comments.push(comment)
-    this.setState({ comments })
+    API.getCommentsOfPost(this.props.post.id, comments => this.setState({ comments }))
   }
 
   handleCommentUpdate = (comment) => {
-    window.alerts.removeAll()
-    fetch(`/api/comments/${comment.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ comment }),
+    API.updateComment(comment, (newComment) => {
+      const comments = this.state.comments.filter(c => c.id !== newComment.id)
+      comments.push(newComment)
+      this.setState({ comments })
     })
-      .then((response) => {
-        if (response.ok) {
-          response.json().then(newComment => this.updateComments(newComment))
-        } else {
-          response.json()
-            .then((errors) => {
-              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
-            })
-            .catch(error => window.alerts.addMessage({
-              text: `Cannot update comment: ${error}`,
-              type: 'error',
-            }))
-        }
-      })
-  }
-
-  removeComment = (id) => {
-    const comments = this.state.comments.filter(comment => comment.id !== id)
-    this.setState({ comments })
   }
 
   handleCommentDelete = (comment) => {
-    window.alerts.removeAll()
-    fetch(`/api/comments/${comment.id}`, {
-      method: 'DELETE',
+    API.deleteComment(comment, () => {
+      const comments = this.state.comments.filter(c => c.id !== comment.id)
+      this.setState({ comments })
     })
-      .then(response => response.json())
-      .then(() => this.removeComment(comment.id))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot delete comment "${comment.body}": ${error}`,
-        type: 'error',
-      }))
   }
 
   render() {

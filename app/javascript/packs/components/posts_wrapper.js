@@ -1,6 +1,7 @@
 import React from 'react'
 import NewPost from './new_post'
 import AllPosts from './all_posts'
+import API from './api'
 
 export default class PostsWrapper extends React.Component {
   constructor(props) {
@@ -10,47 +11,30 @@ export default class PostsWrapper extends React.Component {
       nextEnabled: true,
       tag: false,
       username: false,
-      postsLink: '/api/posts',
     }
   }
 
   componentDidMount() {
-    this.loadPosts()
+    this.loadPosts(0)
   }
 
-  fetchPosts = () => {
-    fetch(this.state.postsLink)
-      .then(response => response.json())
-      .then(posts => this.setState({ posts }))
-      .catch((error) => {
-        let typeOfPosts = null
-        if (this.state.tag) {
-          typeOfPosts = `posts for tag #${this.state.tag}`
-        } else if (this.state.username) {
-          typeOfPosts = `posts for user ${this.state.username}`
-        } else {
-          typeOfPosts = 'all posts'
-        }
-        window.alerts.addMessage({
-          text: `Cannot get ${typeOfPosts}: ${error}`,
-          type: 'error',
-        })
-      })
-  }
-
-  loadPosts = () => {
+  loadPosts = (offset) => {
+    const postsUpdate = posts => ({
+      posts: this.state.posts.concat(posts),
+      nextEnabled: posts.length !== 0,
+    })
     if (this.props.receiveTag) {
-      this.setState({
-        tag: this.props.match.params.tag,
-        postsLink: `/api/posts?tag=${this.props.match.params.tag}`,
-      }, this.fetchPosts)
+      const { tag } = this.props.match.params
+      API.getPostsForTag(tag, offset, (posts) => {
+        this.setState({ ...postsUpdate(posts), tag })
+      })
     } else if (this.props.receiveUser) {
-      this.setState({
-        username: this.props.match.params.username,
-        postsLink: `/api/posts?username=${this.props.match.params.username}`,
-      }, this.fetchPosts)
+      const { username } = this.props.match.params
+      API.getPostsForUsername(username, offset, (posts) => {
+        this.setState({ ...postsUpdate(posts), username })
+      })
     } else {
-      this.fetchPosts()
+      API.getPosts(offset, posts => this.setState(postsUpdate(posts)))
     }
   }
 
@@ -61,59 +45,18 @@ export default class PostsWrapper extends React.Component {
   }
 
   handlePostUpdate = (post) => {
-    window.alerts.removeAll()
-    fetch(`/api/posts/${post.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ post }),
+    API.updatePost(post, (newPost) => {
+      const posts = this.state.posts.filter(p => p.id !== newPost.id)
+      posts.unshift(newPost)
+      this.setState({ posts })
     })
-      .then((response) => {
-        if (response.ok) {
-          response.json().then(newPost => this.updatePosts(newPost))
-        } else {
-          response.json()
-            .then((errors) => {
-              throw Object.keys(errors).map(key => errors[key].map(error => `${key} ${error}`).join(', ')).join(', ')
-            })
-            .catch(error => window.alerts.addMessage({
-              text: `Cannot update post: ${error}`,
-              type: 'error',
-            }))
-        }
-      })
   }
 
-  removePost = (id) => {
-    const posts = this.state.posts.filter(post => post.id !== id)
-    this.setState({ posts })
-  }
-
-  handleDelete = (post) => {
-    window.alerts.removeAll()
-    fetch(`/api/posts/${post.id}`, {
-      method: 'DELETE',
+  handlePostDelete = (post) => {
+    API.removePost(post, () => {
+      const posts = this.state.posts.filter(p => p.id !== post.id)
+      this.setState({ posts })
     })
-      .then(response => response.json())
-      .then(() => this.removePost(post.id))
-      .catch(error => window.alerts.addMessage({
-        text: `Cannot delete post "${post.body}": ${error}`,
-        type: 'error',
-      }))
-  }
-
-  loadMorePosts = () => {
-    window.alerts.removeAll()
-    const nextPageLink = `${this.state.postsLink}${this.state.tag || this.state.username ? '&' : '?'}offset=${this.state.posts.length}`
-    fetch(nextPageLink)
-      .then(response => response.json())
-      .then((posts) => {
-        if (posts.length === 0) {
-          this.setState({ nextEnabled: false })
-        }
-        this.setState({ posts: this.state.posts.concat(posts) })
-      })
   }
 
   render() {
@@ -135,9 +78,9 @@ export default class PostsWrapper extends React.Component {
     const allPosts = (
       <AllPosts
         posts={this.state.posts}
-        handleDelete={this.handleDelete}
+        handleDelete={this.handlePostDelete}
         handleUpdate={this.handlePostUpdate}
-        loadMorePosts={this.loadMorePosts}
+        loadMorePosts={() => this.loadPosts(this.state.posts.length)}
         loadMoreEnabled={this.state.nextEnabled}
         userId={this.props.userId}
       />)
