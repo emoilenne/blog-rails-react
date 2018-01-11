@@ -6,7 +6,7 @@ describe 'Comments API' do
       get "/api/comments/#{Comment.last.id}"
       expect(response).to be_success
       json = JSON.parse(response.body)
-      expect(json['user_id']).to eq(3)
+      expect(json['user_id']).to eq(2)
     end
 
     it 'get invalid comment' do

@@ -174,9 +174,9 @@ export default class API extends React.Component {
       }))
   }
 
-  static getPosts = (offset, callOnSuccess) => {
+  static getPosts = (offset, sortBy, sortType, callOnSuccess) => {
     window.alerts.removeAll()
-    fetch(`/api/posts?offset=${offset}`)
+    fetch(`/api/posts?sort=${sortBy}&type=${sortType}&offset=${offset}`)
       .then(response => response.json())
       .then(posts => callOnSuccess(posts))
       .catch((error) => {
@@ -187,9 +187,9 @@ export default class API extends React.Component {
       })
   }
 
-  static getPostsForTag = (tag, offset, callOnSuccess) => {
+  static getPostsForTag = (tag, offset, sortBy, sortType, callOnSuccess) => {
     window.alerts.removeAll()
-    fetch(`/api/posts?tag=${tag}&offset=${offset}`)
+    fetch(`/api/posts?sort=${sortBy}&type=${sortType}&tag=${tag}&offset=${offset}`)
       .then(response => response.json())
       .then(posts => callOnSuccess(posts))
       .catch((error) => {
@@ -200,9 +200,9 @@ export default class API extends React.Component {
       })
   }
 
-  static getPostsForUsername = (username, offset, callOnSuccess) => {
+  static getPostsForUsername = (username, offset, sortBy, sortType, callOnSuccess) => {
     window.alerts.removeAll()
-    fetch(`/api/posts?username=${username}&offset=${offset}`)
+    fetch(`/api/posts?sort=${sortBy}&type=${sortType}&username=${username}&offset=${offset}`)
       .then(response => response.json())
       .then(posts => callOnSuccess(posts))
       .catch((error) => {

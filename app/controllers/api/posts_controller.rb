@@ -6,7 +6,7 @@ module Api
     def index
       posts_per_page = 30
       posts = Post.get_posts(params)
-      posts = posts.sort_date('desc')
+      posts = posts.sort_by_param(posts, params['sort'], params['type'])
       posts = posts.offset_posts(posts, params['offset'])
       render json: posts.limit(posts_per_page)
     end
