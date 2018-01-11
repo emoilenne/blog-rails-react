@@ -18,10 +18,14 @@ class Post < ApplicationRecord
     order(updated_at: type)
   }
   scope :sort_likes, lambda { |type|
-    joins(:likes).order("COUNT(likes.id) #{type}")
+    left_joins(:likes)
+      .group(:id)
+      .order("COUNT(likes.id) #{type}, updated_at #{type}")
   }
   scope :sort_comments, lambda { |type|
-    joins(:comments).order("COUNT(comments.id) #{type}")
+    left_joins(:comments)
+      .group(:id)
+      .order("COUNT(comments.id) #{type}, updated_at #{type}")
   }
 
   after_create do
@@ -75,11 +79,15 @@ class Post < ApplicationRecord
   end
 
   def self.sort_by_param(posts, quality, type)
-    allowed_qualities = %w[date]
+    allowed_qualities = %w[date likes comments]
     allowed_types = %w[asc desc]
-    return posts unless allowed_qualities.include?(quality) &&
-                        allowed_types.include?(type)
-    posts.sort_date(type)
+    return posts.sort_date('desc') unless allowed_qualities.include?(quality) &&
+                                          allowed_types.include?(type)
+    case quality
+    when 'date' then posts.sort_date(type)
+    when 'likes' then posts.sort_likes(type)
+    when 'comments' then posts.sort_comments(type)
+    end
   end
 
   def self.offset_posts(posts, offset)
