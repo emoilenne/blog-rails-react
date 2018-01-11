@@ -4,8 +4,9 @@ module Api
     before_action :find_comment, only: %i[show update destroy]
 
     def create
-      comment = Comment.create(comment_params)
+      comment = Comment.new(comment_params)
       if comment.valid?
+        comment.save
         render json: comment
       else
         render json: comment.errors.messages, status: :bad_request

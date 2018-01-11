@@ -31,9 +31,10 @@ gem 'webpacker'
 gem 'foreman'
 # React
 gem 'react-rails'
-
 # lint
 gem 'rubocop'
+# rspec
+gem 'rspec-rails'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'

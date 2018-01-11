@@ -24,6 +24,14 @@ class Post < ApplicationRecord
     joins(:comments).order("COUNT(comments.id) #{type}")
   }
 
+  after_create do
+    add_tags
+  end
+
+  before_destroy do
+    remove_tags
+  end
+
   def self.find_tags(body)
     body.scan(/#\w+/).uniq.map { |tag| tag[1..-1] }
   end

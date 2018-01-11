@@ -1,11 +1,12 @@
 module Api
   # Managing users
   class UsersController < ApplicationController
-    before_action :find_user, only: %i[update delete show]
+    before_action :find_user, only: %i[update destroy show]
 
     def create
-      user = User.create(user_params)
+      user = User.new(user_params)
       if user.valid?
+        user.save
         render json: user
       else
         render json: user.errors.messages, status: :bad_request

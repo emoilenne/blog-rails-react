@@ -4,8 +4,9 @@ module Api
     before_action :find_like, only: %i[show destroy]
 
     def create
-      like = Like.create(like_params)
+      like = Like.new(like_params)
       if like.valid?
+        like.save
         render json: like
       else
         render json: like.errors.messages, status: :bad_request

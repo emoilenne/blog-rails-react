@@ -1,0 +1,43 @@
+image: starefossen/ruby-node:latest
+
+services:
+  - postgres:latest
+
+variables:
+  RAILS_ENV: test
+  POSTGRES_DB: blog_rails_react_test
+  POSTGRES_USER: blog_rails_react
+  POSTGRES_PASSWORD: ""
+  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+
+before_script:
+  - apt-get update -qq
+  - ruby -v
+  - which ruby
+  - npm -v
+  - which npm
+
+rubocop:
+  before_script:
+    - gem install bundler
+    - bundle install --jobs $(nproc) "${FLAGS[@]}"
+  script:
+    - bundle exec rubocop
+
+eslint:
+  before_script:
+    - npm install
+  script:
+    - ./node_modules/.bin/eslint .
+
+rspec:
+  before_script:
+    - cp config/database.yml.git config/database.yml
+    - gem install bundler
+    - bundle install --jobs $(nproc) "${FLAGS[@]}"
+    - bundle exec rake db:create db:migrate db:seed
+  script:
+    - bundle exec rspec
+  only:
+    - master
+    - /^feature-.+$/

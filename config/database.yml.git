@@ -1,0 +1,10 @@
+test:
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  timeout: 5000
+  host: postgres
+  username: blog_rails_react
+  password: ""
+  database: blog_rails_react_test
+  port: 5432

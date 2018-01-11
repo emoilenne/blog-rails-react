@@ -4,7 +4,7 @@ module Api
     before_action :find_post, only: %i[update show destroy tags likes comments]
 
     def index
-      posts_per_page = 3
+      posts_per_page = 30
       posts = Post.get_posts(params)
       posts = posts.sort_date('desc')
       posts = posts.offset_posts(posts, params['offset'])
@@ -12,9 +12,9 @@ module Api
     end
 
     def create
-      post = Post.create(post_params)
+      post = Post.new(post_params)
       if post.valid?
-        post.add_tags
+        post.save
         render json: post
       else
         render json: post.errors.messages, status: :bad_request
@@ -22,7 +22,6 @@ module Api
     end
 
     def destroy
-      @post.remove_tags
       render json: @post.destroy
     end
 
